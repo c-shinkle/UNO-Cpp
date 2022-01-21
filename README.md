@@ -1,6 +1,6 @@
 # UNO!
 
-## A pet project inspired by the Mattel classic of the same name. 
+## A pet project inspired by the Mattel classic of the same name.
 
 ### Building
 
