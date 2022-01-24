@@ -5,7 +5,7 @@ void gameLoop()
 {
     std::vector<char> cards = {'1', '2', '3'};
     std::string* hand = printHand(cards);
-    std::cout << *hand << std::endl;
+    std::cout << *hand;
 }
 
 std::string* printHand(std::vector<char>& cards)

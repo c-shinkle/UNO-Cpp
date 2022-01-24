@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debug_macos",
+            "type": "lldb",
+            "request": "launch",
+            "preLaunchTask": "cmake",
+            "targetArchitecture": "arm64",
+            "program": "${workspaceFolder}/build/unoApp/uno",
+            "args": [],
+            // "stopAtEntry": true, // bug, this doesn't work
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+        }
+    ]
+}
