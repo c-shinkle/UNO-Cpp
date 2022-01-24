@@ -1,6 +1,9 @@
-#include "uno/GameLib.h"
+#include <iostream>
+#include "uno/Card.h"
 
 int main()
 {
-    gameLoop();
+    std::cout << "Hello World\n";
+    Card myCard(Card::Red, Card::Reverse);
+    myCard.Display();
 }
