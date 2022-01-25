@@ -1,4 +1,4 @@
-add_library(unoLib src/GameLib.cpp)
+add_library(unoLib src/GameLib.cpp src/Card.cpp)
  
 message("GameLib current source dir = ${CMAKE_CURRENT_SOURCE_DIR}")
  
