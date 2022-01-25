@@ -9,7 +9,8 @@ Card::~Card()
 {
 }
 
-void Card::Display()
+void
+Card::Display()
 {
 	std::cout << "Color =  " << m_eColor << "\nValue = " << m_eValue << "\n";
 }
