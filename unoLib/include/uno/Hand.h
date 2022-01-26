@@ -8,10 +8,11 @@ public:
 
 	// Public Methods
 	Hand();
-	Hand(size_t nCards, Hand& ParentHand);
 	~Hand();
+	void SetFullDeck();
 	std::string* GetHandString();
 	void Shuffle();
+	size_t DealTo(size_t nCards, Hand& TargetHand);
 
 private:
 	std::vector<Card> m_vCards;
