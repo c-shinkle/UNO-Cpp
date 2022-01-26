@@ -3,16 +3,30 @@
 
 Hand::Hand()
 {
+    //
 	// Default constructor creates the full deck.
+    // For deck composition refer to https://www.letsplayuno.com/news/guide/20181213/30092_732567.html#:~:text=A%20UNO%20deck%20consists%20of,%2C%20yellow%2C%20blue%20and%20green.
 	for (int eColor = Card::Color::Red; eColor <= Card::Color::Blue; ++eColor) {
-		for (int eValue = Card::Value::Zero; eValue <= Card::Value::WildDraw4; ++eValue) {
-			m_vCards.push_back(Card((Card::Color)eColor, (Card::Value)eValue));
+        // There is only 1 zero per deck.
+        m_vCards.push_back(Card((Card::Color)eColor, Card::Value::Zero));
+        // There are 2 of each other number and action cards.
+		for (int eValue = Card::Value::One; eValue <= Card::Value::Draw; ++eValue) {
+            for (int i = 0; i < 2; ++i)
+			    m_vCards.push_back(Card((Card::Color)eColor, (Card::Value)eValue));
 		}
 	}
+    // There are 4 of each wild card.
+    // Wild, Zero = Regular Wild
+    // Wild, Draw = Draw 4 Wild
+    for (int i = 0; i < 4; ++i) {
+        m_vCards.push_back(Card(Card::Color::Wild, Card::Value::Zero));
+        m_vCards.push_back(Card(Card::Color::Wild, Card::Value::Draw));
+    }
 }
 
 Hand::Hand(size_t nCards, Hand& ParentHand)
 {
+    //
 	// This constructor creates a child hand from a parent hand.
 	// Continue dealing until either nCards is reached or ParentHand is empty.
 	while (nCards > 0 && !ParentHand.m_vCards.empty()) {

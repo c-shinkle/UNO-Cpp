@@ -5,10 +5,10 @@ class Card {
 	friend class Hand;
 public:
 	// Enums
-	enum Color { Red, Yellow, Green, Blue };
+	enum Color { Red, Yellow, Green, Blue, Wild };
 	enum Value {
 		Zero, One, Two, Three, Four, Five, Six, Seven,
-		Eight, Nine, Reverse, Skip, Draw2, Wild, WildDraw4
+		Eight, Nine, Reverse, Skip, Draw
 	};
 	Card(Color eColor, Value eValue);
 	~Card();

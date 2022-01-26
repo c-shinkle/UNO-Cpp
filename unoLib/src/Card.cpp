@@ -36,7 +36,6 @@ Card::GetCardString()
     //
     // Printing Flags
     const bool bBold = true;
-    const bool bBlink = false;
     const bool bBackground = true;
 
     char cCardColor;
@@ -53,6 +52,9 @@ Card::GetCardString()
     case Color::Blue :
         cCardColor = cBlue;
         break;
+    case Color::Wild:
+        cCardColor = cMagenta;
+        break;
     default:
         cCardColor = cWhite;
     }
@@ -60,10 +62,6 @@ Card::GetCardString()
     std::string CardString = EscapeSeq;
     if (bBold) {
         CardString += cBoldFont;
-        CardString += cDelimeter;
-    }
-    if (bBlink) {
-        CardString += cSlowBlinkFont;
         CardString += cDelimeter;
     }
     if (bBackground) {
