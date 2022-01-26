@@ -11,6 +11,7 @@ public:
 	Hand(size_t nCards, Hand& ParentHand);
 	~Hand();
 	std::string* GetHandString();
+	void Shuffle();
 
 private:
 	std::vector<Card> m_vCards;

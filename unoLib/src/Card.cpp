@@ -78,7 +78,19 @@ Card::GetCardString()
         CardString += cFinalByte;        
     }
 
-    CardString += m_eValue + 48;
+    char cCardChar = m_eValue + 48;
+    if (m_eColor == Color::Wild && m_eValue == Value::Zero)
+        cCardChar = '?';
+    else if (m_eColor == Color::Wild && m_eValue == Value::Draw)
+        cCardChar = '!';
+    else if (m_eValue == Value::Draw)
+        cCardChar = '+';
+    else if (m_eValue == Value::Reverse)
+        cCardChar = 'R';
+    else if (m_eValue == Value::Skip)
+        cCardChar = '%';
+
+    CardString += cCardChar;
     CardString += EscapeSeq;
     CardString += cResetFont;
     CardString += cFinalByte;

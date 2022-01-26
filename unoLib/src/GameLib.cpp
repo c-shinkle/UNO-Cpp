@@ -6,8 +6,13 @@
 void gameLoop()
 {
     Hand Deck;
-    //Hand childHand = Hand(3, Deck);
-    //std::string* hand = Deck.GetHandString();
+    //
+    // Before shuffling.
     std::string* hand = Deck.GetHandString();
     std::cout << *hand;
+    //
+    // After shuffling.
+    Deck.Shuffle();
+    std::string* hand2 = Deck.GetHandString();
+    std::cout << *hand2;
 }

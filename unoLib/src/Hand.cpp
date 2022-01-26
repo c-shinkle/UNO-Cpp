@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include "uno/Hand.h"
 
 Hand::Hand()
@@ -61,4 +62,16 @@ Hand::GetHandString()
     hand->append("|\n");
     hand->append(tops_and_bottoms);
     return hand;
+}
+
+void
+Hand::Shuffle()
+{
+    //
+    // Shuffles the hand according to the Fisher-Yates shuffle O(n).
+    size_t n = m_vCards.size();
+    for (size_t i = n - 1; i > 0; --i) {
+        size_t j = std::rand() % (i + 1);
+        std::swap(m_vCards[i], m_vCards[j]);
+    }
 }
