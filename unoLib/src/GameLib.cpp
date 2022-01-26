@@ -6,7 +6,8 @@
 void gameLoop()
 {
     Hand Deck;
-    Hand childHand = Hand(3, Deck);
-    std::string* hand = childHand.GetHandString();
+    //Hand childHand = Hand(3, Deck);
+    //std::string* hand = Deck.GetHandString();
+    std::string* hand = Deck.GetHandString();
     std::cout << *hand;
 }

@@ -41,7 +41,8 @@ Hand::GetHandString()
     for (Card card : m_vCards)
     {
         hand->push_back('|');
-        hand->push_back(static_cast<char>(card.m_eValue) + 48);
+        //hand->push_back(static_cast<char>(card.m_eValue) + 48);
+        hand->append(card.GetCardString());
     }
     hand->append("|\n");
     hand->append(tops_and_bottoms);

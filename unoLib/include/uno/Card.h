@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Card {
 	friend class Hand;
@@ -14,7 +15,7 @@ public:
 
 private:
 	// Methods
-	void Display();
+	std::string GetCardString();
 
 	// Members
 	Color m_eColor;
