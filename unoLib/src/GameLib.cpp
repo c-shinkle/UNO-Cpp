@@ -10,6 +10,11 @@ void gameLoop()
     UNO.InitNewGame();
 }
 
+void ClearScreen()
+{
+    std::cout << "\033[2J\033[H";
+}
+
 void PrintBorder()
 {
     size_t nBorderLen = 100;
@@ -39,4 +44,6 @@ void FeatureTest()
     PrintBorder();
     std::cout << "Press enter to continue...";
     std::getline(std::cin, std::string());
+
+    ClearScreen();
 }
