@@ -1,5 +1,6 @@
 #include <iostream>
 #include "uno/Game.h"
+#include "uno/GameLib.h"
 
 Game::Game()
 {
@@ -47,6 +48,12 @@ Game::DealCards()
 			}
 		}
 	}
+	//
+	// Deal a card to the discard pile.
+	if (m_DrawPile.DealTo(1, m_DiscardPile) != 0) {
+		std::cout << "ERROR: Ran out of cards in the draw pile.\n";
+		return true;
+	}
 	return false;
 }
 
@@ -68,9 +75,38 @@ Game::InitNewGame()
 	//
 	// Deal out the first cards.
 	if (DealCards())
-		return;
+		return;	
 	//
 	// Display the user's cards.
-	std::cout << "Your cards:\n";
+	//std::cout << "Your cards:\n";
+	//m_vHands[0].Display();
+	DisplayCurrentState();
+}
+
+void
+Game::DisplayCurrentState()
+{
+	//
+	// Displays the current game state.
+	//
+	// First, clear the screen for a fresh display.
+	ClearScreen();
+	//
+	// Display current player, and direction.
+	// Clockwise corresponds to increasing player index.
+	std::cout << "Player\t\tDirection\n" << m_nCurrentPlayer;
+	if (m_nCurrentPlayer == 0)
+		std::cout << "(You)";
+	if (m_bClockwise)
+		std::cout << "\t\tCW(>)\n";
+	else
+		std::cout << "\t\tCCW(<)\n";
+	//
+	// Display the top (back) of the discard pile.
+	std::cout << "\nDiscard Pile\n";
+	m_DiscardPile.DisplayTopCard();
+	//
+	// Display the player's cards.
+	std::cout << "\nYour Cards\n";
 	m_vHands[0].Display();
 }

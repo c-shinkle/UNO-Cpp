@@ -11,6 +11,7 @@ public:
 	void AskNumberOfPlayers();
 	bool DealCards();
 	void InitNewGame();
+	void DisplayCurrentState();
 
 private:
 	size_t m_nInitialHandSize = 7;

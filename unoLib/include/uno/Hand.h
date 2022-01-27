@@ -11,6 +11,7 @@ public:
 	~Hand();
 	void SetFullDeck();
 	void Display();
+	void DisplayTopCard();
 	void Shuffle();
 	size_t DealTo(size_t nCards, Hand& TargetHand);
 

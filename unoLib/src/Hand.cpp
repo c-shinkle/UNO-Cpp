@@ -59,6 +59,23 @@ Hand::Display()
 }
 
 void
+Hand::DisplayTopCard()
+{
+    //
+    // Displays the top (back) card in the hand.
+    if (m_vCards.empty())
+        return;
+
+    std::string tops_and_bottoms(" - \n");
+    std::string TopCard = tops_and_bottoms;
+    TopCard += '|';
+    TopCard += m_vCards.back().GetCardString();
+    TopCard += "|\n";
+    TopCard += tops_and_bottoms;
+    std::cout << TopCard;
+}
+
+void
 Hand::Shuffle()
 {
     //
