@@ -108,5 +108,5 @@ Game::DisplayCurrentState()
 	//
 	// Display the player's cards.
 	std::cout << "\nYour Cards\n";
-	m_vHands[0].Display();
+	m_vHands[0].Display(true);
 }

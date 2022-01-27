@@ -10,8 +10,10 @@ Card::~Card()
 }
 
 std::string
-Card::GetCardString()
+Card::GetCardString(bool bSelected)
 {
+    //
+    // Creates the Card display string. If the Card is selected the colors are reversed.
     //
     // Refer to https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
     const std::string EscapeSeq = "\u001b[";
@@ -36,7 +38,7 @@ Card::GetCardString()
     //
     // Printing Flags
     const bool bBold = true;
-    const bool bBackground = true;
+    const bool bBackground = bSelected;
 
     char cCardColor;
     switch (m_eColor) {

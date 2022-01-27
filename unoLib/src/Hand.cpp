@@ -38,7 +38,7 @@ Hand::SetFullDeck()
 }
 
 void
-Hand::Display()
+Hand::Display(bool bHighlightSelected)
 {
     std::string tops_and_bottoms(" ");
 
@@ -49,9 +49,13 @@ Hand::Display()
 
     std::string hand;
     hand += tops_and_bottoms;
-    for (Card card : m_vCards) {
+    for (size_t i = 0; i < m_vCards.size(); ++i) {
         hand += '|';
-        hand += card.GetCardString();
+        if (bHighlightSelected && i == m_nSelected)
+            hand += m_vCards[i].GetCardString(true);
+        else
+            hand += m_vCards[i].GetCardString(false);
+
     }
     hand += "|\n";
     hand += tops_and_bottoms;

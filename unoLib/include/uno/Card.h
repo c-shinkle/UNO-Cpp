@@ -15,7 +15,7 @@ public:
 
 private:
 	// Methods
-	std::string GetCardString();
+	std::string GetCardString(bool bSelected = false);
 
 	// Members
 	Color m_eColor;
