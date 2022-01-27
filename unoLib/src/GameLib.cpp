@@ -22,7 +22,8 @@ void gameLoop()
 
 void ClearScreen()
 {
-    std::cout << "\033[2J\033[H";
+    //std::cout << "\033[2J\033[H";
+    std::cout << "\033c";
 }
 
 void PrintBorder()
