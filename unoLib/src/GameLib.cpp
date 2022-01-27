@@ -66,6 +66,24 @@ char GetCharInput()
 #endif
 }
 
+void IncrementIndex(bool bUp, size_t nSize, size_t& nCurrentIndex)
+{
+    if (nSize == 0)
+        return;
+    //
+    // Selects the next value by either moving up or down.
+    if (bUp) {
+        ++nCurrentIndex;
+        if (nCurrentIndex == nSize)
+            nCurrentIndex = 0;
+    }
+    else {
+        if (nCurrentIndex == 0)
+            nCurrentIndex = nSize;
+        --nCurrentIndex;
+    }
+}
+
 void FeatureTest()
 {
     PrintBorder();

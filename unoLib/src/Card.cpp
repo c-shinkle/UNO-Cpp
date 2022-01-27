@@ -9,6 +9,24 @@ Card::~Card()
 {
 }
 
+bool
+Card::IsPlayable(const Card& TargetCard)
+{
+    //
+    // Returns true if this card can be played onto
+    // the target card.
+    if (m_eColor == Color::Wild)
+        return true;
+    // Fix this in the future.
+    if (TargetCard.m_eColor == Color::Wild)
+        return true;
+    if (m_eColor == TargetCard.m_eColor)
+        return true;
+    if (m_eValue == TargetCard.m_eValue)
+        return true;
+    return false;
+}
+
 std::string
 Card::GetCardString(bool bSelected)
 {

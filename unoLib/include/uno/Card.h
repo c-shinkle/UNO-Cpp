@@ -12,6 +12,7 @@ public:
 	};
 	Card(Color eColor, Value eValue);
 	~Card();
+	bool IsPlayable(const Card& TargetCard);
 
 private:
 	// Methods

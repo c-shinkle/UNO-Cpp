@@ -122,19 +122,74 @@ Game::Run()
 		case KEY_UP:
 		case KEY_RIGHT:
 			bRedraw = true;
-			m_vHands[0].Select(true);
+			m_vHands[0].IncrementSelection(true);
 			break;
 		case KEY_DOWN:
 		case KEY_LEFT:
 			bRedraw = true;
-			m_vHands[0].Select(false);
+			m_vHands[0].IncrementSelection(false);
 			break;
 		case KEY_ESCAPE:
 			bGameOver = true;
+			break;
+		case KEY_ENTER:
+			std::tie(bRedraw, bGameOver) = PlayTurn();
 			break;
 		}
 
 		if (bRedraw)
 			DisplayCurrentState();
 	}
+}
+
+std::pair<bool, bool>
+Game::PlayTurn()
+{
+	//
+	// Returns a pair of bool to indicate if the game needs to be redrawn
+	// or the game has ended. <bRedraw, bGameOver>
+	if (m_nCurrentPlayer != 0) {
+		//
+		// Draw a card for the AI if it doesn't have a playable card.
+		if (!m_vHands[m_nCurrentPlayer].SelectPlayableCard(m_DiscardPile)) {
+			if (m_DrawPile.DealTo(1, m_vHands[m_nCurrentPlayer]) != 0) {
+				// Handle later
+				std::cout << "ERROR: Ran out of draw pile cards.\n";
+				return { false, true };
+			}
+		}
+	}
+	if (!m_vHands[m_nCurrentPlayer].PlayCard(m_DiscardPile)) {
+		if (m_nCurrentPlayer != 0) {
+			// Something went wrong if we are here.
+			std::cout << "ERROR: AI Malfunctoined.\n";
+			return { false, true };
+		}
+		return { false, false };
+	}
+
+	//
+	// If the current player has no cards, the game is over.
+	bool bGameOver = m_vHands[m_nCurrentPlayer].IsEmpty();
+	const auto [eColor, eValue] = m_DiscardPile.GetTopCard();
+	//
+	// Handle wild color selection in the future.
+	if (eValue == Card::Value::Reverse)
+		m_bClockwise = !m_bClockwise;
+	//
+	// Advance the current player.
+	IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+	if (eValue == Card::Value::Draw) {
+		size_t nDraw = 2;
+		if (eColor == Card::Color::Wild)
+			nDraw += 2;
+		if (m_DrawPile.DealTo(nDraw, m_vHands[m_nCurrentPlayer]) != 0) {
+			// Handle later
+			std::cout << "ERROR: Ran out of draw pile cards.\n";
+			return { false, true };
+		}
+	}
+	if (eValue == Card::Value::Skip)
+		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+	return { true, bGameOver };
 }

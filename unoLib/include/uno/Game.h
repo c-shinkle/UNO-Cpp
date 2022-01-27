@@ -35,7 +35,7 @@ private:
 	void AskNumberOfPlayers();
 	bool DealCards();
 	void DisplayCurrentState();
-
+	std::pair<bool, bool> PlayTurn();
 
 	size_t m_nInitialHandSize = 7;
 	size_t m_nPlayers = 0;

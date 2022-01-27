@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include "uno/Hand.h"
+#include "uno/GameLib.h"
 
 Hand::Hand()
 {
@@ -93,23 +94,46 @@ Hand::Shuffle()
 }
 
 void
-Hand::Select(bool bUp)
+Hand::IncrementSelection(bool bUp)
 {
-    size_t nSize = m_vCards.size();
-    if (nSize == 0)
-        return;
+    IncrementIndex(bUp, m_vCards.size(), m_nSelected);
+}
+
+bool
+Hand::PlayCard(Hand& DiscardPile)
+{
     //
-    // Selects the next card by either moving up or down.
-    if (bUp) {
-        ++m_nSelected;
-        if (m_nSelected == m_vCards.size())
-            m_nSelected = 0;
+    // Returns true if the selected card is successfully played,
+    // otherwise returns false.    
+    if (!m_vCards[m_nSelected].IsPlayable(DiscardPile.m_vCards.back()))
+        return false;
+    DiscardPile.m_vCards.push_back(m_vCards[m_nSelected]);
+    m_vCards.erase(m_vCards.begin() + m_nSelected);
+}
+
+bool
+Hand::SelectPlayableCard(const Hand& DiscardPile)
+{
+    //
+    // Selects a random playable card from this hand.
+    // Returns true if a card is found, otherwise returns false.
+    std::vector<size_t> vPlayableIndices;
+    const Card& TargetCard = DiscardPile.m_vCards.back();
+    for (size_t i = 0; i < m_vCards.size(); ++i) {
+        if (m_vCards[i].IsPlayable(TargetCard))
+            vPlayableIndices.push_back(i);
     }
-    else {
-        if (m_nSelected == 0)
-            m_nSelected = m_vCards.size();
-        --m_nSelected;
-    }
+    if (vPlayableIndices.empty())
+        return false;
+    size_t nRandomIndex = std::rand() % (vPlayableIndices.size());
+    m_nSelected = vPlayableIndices[nRandomIndex];
+    return true;
+}
+
+bool
+Hand::IsEmpty()
+{
+    return m_vCards.empty();
 }
 
 size_t
@@ -124,4 +148,10 @@ Hand::DealTo(size_t nCards, Hand& TargetHand)
         m_vCards.pop_back();
     }
     return nCards;
+}
+
+std::pair<Card::Color, Card::Value>
+Hand::GetTopCard()
+{
+    return { m_vCards.back().m_eColor, m_vCards.back().m_eValue };
 }

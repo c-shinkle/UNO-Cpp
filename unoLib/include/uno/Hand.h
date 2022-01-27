@@ -13,8 +13,12 @@ public:
 	void Display(bool bHighlightSelected = false);
 	void DisplayTopCard();
 	void Shuffle();
-	void Select(bool bUp);
+	void IncrementSelection(bool bUp);
+	bool PlayCard(Hand& DiscardPile);
+	bool SelectPlayableCard(const Hand& DiscardPile);
+	bool IsEmpty();
 	size_t DealTo(size_t nCards, Hand& TargetHand);
+	std::pair<Card::Color, Card::Value> GetTopCard();
 
 private:
 	size_t m_nSelected = 0;
