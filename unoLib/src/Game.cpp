@@ -146,28 +146,25 @@ std::pair<bool, bool>
 Game::PlayTurn()
 {
 	//
-	// Returns a pair of bool to indicate if the game needs to be redrawn
+	// Returns a pair of bools to indicate if the game needs to be redrawn
 	// or the game has ended. <bRedraw, bGameOver>
-	if (m_nCurrentPlayer != 0) {
-		//
-		// Draw a card for the AI if it doesn't have a playable card.
-		if (!m_vHands[m_nCurrentPlayer].SelectPlayableCard(m_DiscardPile)) {
-			if (m_DrawPile.DealTo(1, m_vHands[m_nCurrentPlayer]) != 0) {
-				// Handle later
-				std::cout << "ERROR: Ran out of draw pile cards.\n";
-				return { false, true };
-			}
-		}
-	}
+	if (m_nCurrentPlayer != 0)
+		m_vHands[m_nCurrentPlayer].SelectPlayableCard(m_DiscardPile);
+	//
+	// PlayCard checks to see if the selected card is playable.
 	if (!m_vHands[m_nCurrentPlayer].PlayCard(m_DiscardPile)) {
-		if (m_nCurrentPlayer != 0) {
-			// Something went wrong if we are here.
-			std::cout << "ERROR: AI Malfunctoined.\n";
+		//
+		// Draw a card if the selected card is not playable.
+		if (m_DrawPile.DealTo(1, m_vHands[m_nCurrentPlayer]) != 0) {
+			// Handle later
+			std::cout << "ERROR: Ran out of draw pile cards.\n";
 			return { false, true };
 		}
-		return { false, false };
+		//
+		// Advance the current player.
+		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+		return { true, false };
 	}
-
 	//
 	// If the current player has no cards, the game is over.
 	bool bGameOver = m_vHands[m_nCurrentPlayer].IsEmpty();

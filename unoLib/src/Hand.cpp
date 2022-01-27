@@ -109,14 +109,18 @@ Hand::PlayCard(Hand& DiscardPile)
         return false;
     DiscardPile.m_vCards.push_back(m_vCards[m_nSelected]);
     m_vCards.erase(m_vCards.begin() + m_nSelected);
+    //
+    // Reset the selected card to 0.
+    m_nSelected = 0;
+    return true;
 }
 
-bool
+void
 Hand::SelectPlayableCard(const Hand& DiscardPile)
 {
     //
     // Selects a random playable card from this hand.
-    // Returns true if a card is found, otherwise returns false.
+    // Not guaranteed to find a playable card.
     std::vector<size_t> vPlayableIndices;
     const Card& TargetCard = DiscardPile.m_vCards.back();
     for (size_t i = 0; i < m_vCards.size(); ++i) {
@@ -124,10 +128,9 @@ Hand::SelectPlayableCard(const Hand& DiscardPile)
             vPlayableIndices.push_back(i);
     }
     if (vPlayableIndices.empty())
-        return false;
-    size_t nRandomIndex = std::rand() % (vPlayableIndices.size());
+        return;
+    size_t nRandomIndex = std::rand() % vPlayableIndices.size();
     m_nSelected = vPlayableIndices[nRandomIndex];
-    return true;
 }
 
 bool
