@@ -92,6 +92,26 @@ Hand::Shuffle()
     }
 }
 
+void
+Hand::Select(bool bUp)
+{
+    size_t nSize = m_vCards.size();
+    if (nSize == 0)
+        return;
+    //
+    // Selects the next card by either moving up or down.
+    if (bUp) {
+        ++m_nSelected;
+        if (m_nSelected == m_vCards.size())
+            m_nSelected = 0;
+    }
+    else {
+        if (m_nSelected == 0)
+            m_nSelected = m_vCards.size();
+        --m_nSelected;
+    }
+}
+
 size_t
 Hand::DealTo(size_t nCards, Hand& TargetHand)
 {

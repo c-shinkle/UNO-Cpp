@@ -77,9 +77,7 @@ Game::InitNewGame()
 	if (DealCards())
 		return;	
 	//
-	// Display the user's cards.
-	//std::cout << "Your cards:\n";
-	//m_vHands[0].Display();
+	// Display the game.
 	DisplayCurrentState();
 }
 
@@ -109,4 +107,34 @@ Game::DisplayCurrentState()
 	// Display the player's cards.
 	std::cout << "\nYour Cards\n";
 	m_vHands[0].Display(true);
+}
+
+void
+Game::Run()
+{
+	InitNewGame();
+	bool bGameOver = false;
+	while (!bGameOver) {
+		bool bRedraw = false;
+		char cInput = GetCharInput();
+
+		switch (cInput) {
+		case KEY_UP:
+		case KEY_RIGHT:
+			bRedraw = true;
+			m_vHands[0].Select(true);
+			break;
+		case KEY_DOWN:
+		case KEY_LEFT:
+			bRedraw = true;
+			m_vHands[0].Select(false);
+			break;
+		case KEY_ESCAPE:
+			bGameOver = true;
+			break;
+		}
+
+		if (bRedraw)
+			DisplayCurrentState();
+	}
 }

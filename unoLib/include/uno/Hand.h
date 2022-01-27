@@ -13,6 +13,7 @@ public:
 	void Display(bool bHighlightSelected = false);
 	void DisplayTopCard();
 	void Shuffle();
+	void Select(bool bUp);
 	size_t DealTo(size_t nCards, Hand& TargetHand);
 
 private:
