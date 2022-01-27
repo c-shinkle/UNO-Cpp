@@ -10,7 +10,7 @@ public:
 	Hand();
 	~Hand();
 	void SetFullDeck();
-	std::string* GetHandString();
+	void Display();
 	void Shuffle();
 	size_t DealTo(size_t nCards, Hand& TargetHand);
 

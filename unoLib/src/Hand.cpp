@@ -37,8 +37,8 @@ Hand::SetFullDeck()
     }
 }
 
-std::string*
-Hand::GetHandString()
+void
+Hand::Display()
 {
     std::string tops_and_bottoms(" ");
 
@@ -47,17 +47,15 @@ Hand::GetHandString()
 
     tops_and_bottoms.push_back('\n');
 
-    std::string* hand = new std::string();
-    hand->append(tops_and_bottoms);
-    for (Card card : m_vCards)
-    {
-        hand->push_back('|');
-        //hand->push_back(static_cast<char>(card.m_eValue) + 48);
-        hand->append(card.GetCardString());
+    std::string hand;
+    hand += tops_and_bottoms;
+    for (Card card : m_vCards) {
+        hand += '|';
+        hand += card.GetCardString();
     }
-    hand->append("|\n");
-    hand->append(tops_and_bottoms);
-    return hand;
+    hand += "|\n";
+    hand += tops_and_bottoms;
+    std::cout << hand;
 }
 
 void

@@ -32,13 +32,11 @@ void FeatureTest()
     Deck.SetFullDeck();
     //
     // Before shuffling.
-    std::string* hand = Deck.GetHandString();
-    std::cout << *hand;
+    Deck.Display();
     //
     // After shuffling.
     Deck.Shuffle();
-    std::string* hand2 = Deck.GetHandString();
-    std::cout << *hand2;
+    Deck.Display();
 
     std::cout << "\n\n";
     PrintBorder();

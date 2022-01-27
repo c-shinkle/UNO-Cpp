@@ -71,7 +71,6 @@ Game::InitNewGame()
 		return;
 	//
 	// Display the user's cards.
-	std::string* strHand = m_vHands[0].GetHandString();
 	std::cout << "Your cards:\n";
-	std::cout << *strHand;
+	m_vHands[0].Display();
 }
