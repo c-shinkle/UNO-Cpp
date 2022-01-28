@@ -15,12 +15,13 @@ Card::IsPlayable(const Card& TargetCard)
     //
     // Returns true if this card can be played onto
     // the target card.
+    Color eColor = TargetCard.m_eColor == Color::Wild ?
+        TargetCard.m_eWildColor : TargetCard.m_eColor;
     if (m_eColor == Color::Wild)
         return true;
-    // Fix this in the future.
-    if (TargetCard.m_eColor == Color::Wild)
+    if (m_eColor == eColor)
         return true;
-    if (m_eColor == TargetCard.m_eColor)
+    if (eColor == Color::Wild)
         return true;
     if (m_eValue == TargetCard.m_eValue)
         return true;
@@ -59,7 +60,9 @@ Card::GetCardString(bool bSelected)
     const bool bBackground = bSelected;
 
     char cCardColor;
-    switch (m_eColor) {
+    Color eColor = (m_bPlayed && m_eColor == Wild)
+        ? m_eWildColor : m_eColor;
+    switch (eColor) {
     case Color::Red:
         cCardColor = cRed;
         break;

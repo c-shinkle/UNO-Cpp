@@ -13,12 +13,13 @@ public:
 	Card(Color eColor, Value eValue);
 	~Card();
 	bool IsPlayable(const Card& TargetCard);
-
-private:
-	// Methods
 	std::string GetCardString(bool bSelected = false);
 
+private:
+
 	// Members
+	bool m_bPlayed = false;
 	Color m_eColor;
+	Color m_eWildColor = Color::Wild;
 	Value m_eValue;
 };

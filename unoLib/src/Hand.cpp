@@ -107,6 +107,11 @@ Hand::PlayCard(Hand& DiscardPile)
     // otherwise returns false.    
     if (!m_vCards[m_nSelected].IsPlayable(DiscardPile.m_vCards.back()))
         return false;
+    m_vCards[m_nSelected].m_bPlayed = true;
+    //
+    // Pick a random wild color.
+    if (m_vCards[m_nSelected].m_eColor == Card::Color::Wild)
+        m_vCards[m_nSelected].m_eWildColor = (Card::Color)(std::rand() % (4));
     DiscardPile.m_vCards.push_back(m_vCards[m_nSelected]);
     m_vCards.erase(m_vCards.begin() + m_nSelected);
     //

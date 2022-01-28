@@ -203,8 +203,6 @@ Game::PlayTurn()
 	// If the current player has no cards, the game is over.
 	bool bGameOver = m_vHands[m_nCurrentPlayer].IsEmpty();
 	const auto [eColor, eValue] = m_DiscardPile.GetTopCard();
-	//
-	// Handle wild color selection in the future.
 	if (eValue == Card::Value::Reverse)
 		m_bClockwise = !m_bClockwise;
 	//
@@ -219,6 +217,7 @@ Game::PlayTurn()
 			std::cout << "ERROR: Ran out of draw pile cards.\n";
 			return { false, true };
 		}
+		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
 	}
 	if (eValue == Card::Value::Skip)
 		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);

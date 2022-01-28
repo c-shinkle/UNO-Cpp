@@ -38,10 +38,11 @@ private:
 	void DisplayEndGameState();
 	std::pair<bool, bool> PlayTurn();
 
+
+	bool m_bClockwise = true;
 	size_t m_nInitialHandSize = 7;
 	size_t m_nPlayers = 0;
 	size_t m_nCurrentPlayer = 0;
-	bool m_bClockwise = true;
 	Hand m_DiscardPile, m_DrawPile;
 	std::vector<Hand> m_vHands;
 };
