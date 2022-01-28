@@ -1,5 +1,14 @@
 #include <iostream>
+#include <vector>
 #include "uno/Card.h"
+
+//
+// Static data
+const std::vector<Card::Color> Card::ms_vPrimaryColors = {
+    Color::Red, Color::Yellow, Color::Green, Color::Blue };
+const std::vector<Card::Value> Card::ms_vValues = {
+    Value::Zero, Value::One, Value::Two, Value::Three, Value::Four, Value::Five, Value::Six,
+    Value::Seven, Value::Eight, Value::Nine, Value::Reverse, Value::Skip, Value::Draw};
 
 Card::Card(Color eColor, Value eValue) : m_eColor(eColor), m_eValue(eValue)
 {
@@ -62,7 +71,7 @@ Card::GetCardString(bool bSelected)
     const bool bBackground = bSelected;
 
     char cCardColor;
-    Color eColor = (m_bPlayed && m_eColor == Wild)
+    Color eColor = (m_bPlayed && m_eColor == Color::Wild)
         ? m_eWildColor : m_eColor;
     switch (eColor) {
     case Color::Red:
@@ -103,7 +112,7 @@ Card::GetCardString(bool bSelected)
         CardString += cFinalByte;        
     }
 
-    char cCardChar = m_eValue + 48;
+    char cCardChar = (int)m_eValue + 48;
     if (m_eColor == Color::Wild && m_eValue == Value::Zero)
         cCardChar = '?';
     else if (m_eColor == Color::Wild && m_eValue == Value::Draw)
