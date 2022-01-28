@@ -57,6 +57,22 @@ Game::DealCards()
 	return false;
 }
 
+bool
+Game::DrawCards(size_t nCards)
+{
+	//
+	// The current player draws nCards and the draw pile is replenished if needed.
+	// Returns true if something goes wrong, otherwise returns false.
+	nCards = m_DrawPile.DealTo(nCards, m_vHands[m_nCurrentPlayer]);
+	if (nCards == 0)
+		return false;
+	//
+	// Replenish the draw pile with the discard pile.
+	if (m_DrawPile.ReplenishFrom(m_DiscardPile))
+		return true;
+	return DrawCards(nCards);
+}
+
 void
 Game::InitNewGame()
 {
@@ -189,8 +205,7 @@ Game::PlayTurn()
 	if (!m_vHands[m_nCurrentPlayer].PlayCard(m_DiscardPile)) {
 		//
 		// Draw a card if the selected card is not playable.
-		if (m_DrawPile.DealTo(1, m_vHands[m_nCurrentPlayer]) != 0) {
-			// Handle later
+		if (DrawCards(1)) {
 			std::cout << "ERROR: Ran out of draw pile cards.\n";
 			return { false, true };
 		}
@@ -212,8 +227,7 @@ Game::PlayTurn()
 		size_t nDraw = 2;
 		if (eColor == Card::Color::Wild)
 			nDraw += 2;
-		if (m_DrawPile.DealTo(nDraw, m_vHands[m_nCurrentPlayer]) != 0) {
-			// Handle later
+		if (DrawCards(nDraw)) {
 			std::cout << "ERROR: Ran out of draw pile cards.\n";
 			return { false, true };
 		}

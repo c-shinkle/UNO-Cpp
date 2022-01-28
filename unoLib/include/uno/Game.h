@@ -34,6 +34,7 @@ private:
 	void InitNewGame();
 	void AskNumberOfPlayers();
 	bool DealCards();
+	bool DrawCards(size_t nCards);
 	void DisplayCurrentState();
 	void DisplayEndGameState();
 	std::pair<bool, bool> PlayTurn();

@@ -13,6 +13,7 @@ public:
 	void Display(bool bHighlightSelected = false);
 	void DisplayTopCard();
 	void Shuffle();
+	bool ReplenishFrom(Hand& DiscardPile);
 	void IncrementSelection(bool bUp);
 	bool PlayCard(Hand& DiscardPile);
 	void SelectPlayableCard(const Hand& DiscardPile);

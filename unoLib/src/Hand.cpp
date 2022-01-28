@@ -93,6 +93,30 @@ Hand::Shuffle()
     }
 }
 
+bool
+Hand::ReplenishFrom(Hand& DiscardPile)
+{
+    //
+    // Replenishes this hand with the discard pile.
+    // Returns true if something goes wrong,
+    // otherwise returns false.
+    //
+    // If the discard pile has less than 2 cards, we can't replenish.
+    if (!IsEmpty() || DiscardPile.m_vCards.size() < 2)
+        return true;
+    std::swap(m_vCards, DiscardPile.m_vCards);
+    DiscardPile.m_vCards.push_back(m_vCards.back());
+    m_vCards.pop_back();
+    //
+    // Reset card data and shuffle.
+    for (Card& card : m_vCards) {
+        card.m_bPlayed = false;
+        card.m_eWildColor = Card::Color::Wild;
+    }
+    Shuffle();
+    return false;
+}
+
 void
 Hand::IncrementSelection(bool bUp)
 {
