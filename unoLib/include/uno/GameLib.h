@@ -4,7 +4,7 @@
 void gameLoop();
 void ClearScreen();
 void PrintBorder();
-char GetCharInput();
+int GetCharInput();
 void IncrementIndex(bool bUp, size_t nSize, size_t& nCurrentIndex);
 void FeatureTest();
 void KeyInputTest();

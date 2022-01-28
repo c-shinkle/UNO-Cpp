@@ -36,7 +36,7 @@ void PrintBorder()
     std::cout << strStarRow << '\n' << strSlashRow << '\n' << strStarRow << '\n';
 }
 
-char GetCharInput()
+int GetCharInput()
 {
     //
     // Used to interact with the console/terminal.
@@ -44,7 +44,7 @@ char GetCharInput()
     // Refer to https://stackoverflow.com/questions/142508/how-do-i-check-os-with-a-preprocessor-directive
     // for preprocessor directives.
 #ifdef _WIN32
-    return (char)getch();
+    return _getch();
 #elif defined __APPLE__
     //
     // Refer to https://stackoverflow.com/questions/7469139/what-is-the-equivalent-to-getch-getche-in-linux

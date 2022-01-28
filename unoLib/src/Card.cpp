@@ -23,7 +23,9 @@ Card::IsPlayable(const Card& TargetCard)
         return true;
     if (eColor == Color::Wild)
         return true;
-    if (m_eValue == TargetCard.m_eValue)
+    //
+    // Prevent (Red, Draw) from playing onto (Wild[Blue], Draw).
+    if (m_eValue == TargetCard.m_eValue && TargetCard.m_eColor != Color::Wild)
         return true;
     return false;
 }
