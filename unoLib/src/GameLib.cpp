@@ -32,7 +32,9 @@ void PrintBorder()
 {
     size_t nBorderLen = 100;
     std::string strStarRow(nBorderLen, '*');
+    ColorString(false, Card::Color::Yellow, strStarRow);
     std::string strSlashRow(nBorderLen, '/');
+    ColorString(true, Card::Color::Red, strSlashRow);
     std::cout << strStarRow << '\n' << strSlashRow << '\n' << strStarRow << '\n';
 }
 
@@ -122,4 +124,82 @@ void KeyInputTest()
         char cInput = GetCharInput();
         std::cout << (int)cInput << '\n';
     }
+}
+
+void
+ColorString(bool bSelected, Card::Color eColor, std::string& Text)
+{
+    //
+    // Colors the given string with the given color. If the string is selected the colors (bg/fg) are reversed.
+    //
+    // Refer to https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+    const std::string EscapeSeq = "\u001b[";
+    const char cResetFont = '0';
+    const char cBoldFont = '1';
+    const char cFaintFont = '2';
+    const char cUnderlineFont = '4';
+    const char cSlowBlinkFont = '5';
+    const char cForeground = '3';
+    const char cBackground = '4';
+    const char cBlack = '0';
+    const char cRed = '1';
+    const char cGreen = '2';
+    const char cYellow = '3';
+    const char cBlue = '4';
+    const char cMagenta = '5';
+    const char cCyan = '6';
+    const char cWhite = '7';
+    const char cDelimeter = ';';
+    const char cFinalByte = 'm';
+    //
+    // Printing Flags
+    const bool bBold = true;
+    const bool bBackground = bSelected;
+
+    char cTextColor;
+    switch (eColor) {
+    case Card::Color::Red:
+        cTextColor = cRed;
+        break;
+    case Card::Color::Yellow:
+        cTextColor = cYellow;
+        break;
+    case Card::Color::Green:
+        cTextColor = cGreen;
+        break;
+    case Card::Color::Blue:
+        cTextColor = cBlue;
+        break;
+    case Card::Color::Wild:
+        cTextColor = cMagenta;
+        break;
+    default:
+        cTextColor = cWhite;
+    }
+
+    std::string NewText = EscapeSeq;
+    if (bBold) {
+        NewText += cBoldFont;
+        NewText += cDelimeter;
+    }
+    if (bBackground) {
+        NewText += cBackground;
+        NewText += cTextColor;
+        NewText += cDelimeter;
+        NewText += cForeground;
+        NewText += cWhite;
+        NewText += cFinalByte;
+    }
+    else {
+        NewText += cForeground;
+        NewText += cTextColor;
+        NewText += cFinalByte;
+    }
+
+    NewText += Text;
+    NewText += EscapeSeq;
+    NewText += cResetFont;
+    NewText += cFinalByte;
+
+    std::swap(NewText, Text);
 }
