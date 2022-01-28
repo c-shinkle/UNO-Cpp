@@ -7,10 +7,12 @@
 // Headers for getch() implementation
 #ifdef _WIN32
 #include "conio.h"
-#elif defined __unix__
+#elif defined __APPLE__
+#include <unistd.h>
 #include <termios.h>
+// #include <ncurses.h>
 #else
-DEFINE YOUR OS!
+// DEFINE YOUR OS!
 #endif
 
 
@@ -43,10 +45,10 @@ char GetCharInput()
     // for preprocessor directives.
 #ifdef _WIN32
     return (char)getch();
-#elif defined __unix__
+#elif defined __APPLE__
     //
     // Refer to https://stackoverflow.com/questions/7469139/what-is-the-equivalent-to-getch-getche-in-linux
-    char buf = 0;
+    int buf = 0;
     struct termios old = { 0 };
     fflush(stdout);
     if (tcgetattr(0, &old) < 0)
@@ -57,12 +59,14 @@ char GetCharInput()
     old.c_cc[VTIME] = 0;
     if (tcsetattr(0, TCSANOW, &old) < 0)
         perror("tcsetattr ICANON");
-    if (read(0, &buf, 1) < 0)
+    if (read(0, &buf, 4) < 0)
         perror("read()");
     old.c_lflag |= ICANON;
     old.c_lflag |= ECHO;
     if (tcsetattr(0, TCSADRAIN, &old) < 0)
         perror("tcsetattr ~ICANON");
+    if (buf & 0xffffff00) //if more than one key was input
+        buf >>= 16; // ignore first 2 inputs
     return buf;
 #endif
 }
@@ -103,7 +107,8 @@ void FeatureTest()
     std::cout << "\n\n";
     PrintBorder();
     std::cout << "Press enter to continue...";
-    std::getline(std::cin, std::string());
+    std::string s;
+    std::getline(std::cin, s);
 
     ClearScreen();
 }

@@ -11,15 +11,15 @@
 #define KEY_RIGHT 77
 #define KEY_ESCAPE 27
 #define KEY_ENTER 13
-#elif defined __unix__
+#elif defined __APPLE__
 // Fill in these definitions using GameLib::KeyInputTest()
 // (commented out in UnoApp.cpp)
-#define KEY_UP ??
-#define KEY_DOWN ??
-#define KEY_LEFT ??
-#define KEY_RIGHT ??
-#define KEY_ESCAPE ??
-#define KEY_ENTER ??
+#define KEY_UP 65
+#define KEY_DOWN 66
+#define KEY_LEFT 68
+#define KEY_RIGHT 67
+#define KEY_ESCAPE 27
+#define KEY_ENTER 10
 #endif
 
 class Game {

@@ -5,7 +5,7 @@
             "name": "debug_macos",
             "type": "lldb",
             "request": "launch",
-            "preLaunchTask": "cmake",
+            "preLaunchTask": "make",
             "targetArchitecture": "arm64",
             "program": "${workspaceFolder}/build/unoApp/uno",
             "args": [],
