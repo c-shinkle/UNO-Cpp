@@ -106,15 +106,31 @@ Game::DisplayCurrentState()
 	// First, clear the screen for a fresh display.
 	ClearScreen();
 	//
-	// Display current player, and direction.
+	// Create a direction string.
+	char cDirection = m_bClockwise ? '>' : '<';
+	std::string strDirection(100, cDirection);
+	//
+	// Create Player and Cards strings.
+	std::string strPlayers = "Player:";
+	std::string strCards = "Cards:";
+	for (size_t i = 0; i < m_vHands.size(); ++i) {
+		strPlayers += '\t';
+		std::string strName = std::to_string(i);
+		if (i == 0)
+			strName += "(You)";
+		if (i == m_nCurrentPlayer)
+			ColorString(true, Card::Color::Blue, strName);
+		strPlayers += strName;
+		strCards += '\t';
+		strCards += std::to_string(m_vHands[i].GetSize());
+	}
+	//
+	// Display direction, players, and cards.
 	// Clockwise corresponds to increasing player index.
-	std::cout << "Player\t\tDirection\n" << m_nCurrentPlayer;
-	if (m_nCurrentPlayer == 0)
-		std::cout << "(You)";
-	if (m_bClockwise)
-		std::cout << "\t\tCW(>)\n";
-	else
-		std::cout << "\t\tCCW(<)\n";
+	std::cout << strDirection << '\n';
+	std::cout << strPlayers << '\n';
+	std::cout << strCards << '\n';
+	std::cout << strDirection << '\n';
 	//
 	// Display the top (back) of the discard pile.
 	std::cout << "\nDiscard Pile\n";

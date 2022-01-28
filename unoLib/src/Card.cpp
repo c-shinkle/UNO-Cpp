@@ -47,6 +47,10 @@ Card::GetCardString(bool bSelected)
     // Creates the Card display string.
     Color eColor = (m_bPlayed && m_eColor == Color::Wild)
         ? m_eWildColor : m_eColor;
+    //
+    // Use a more readable color for blue.
+    if (eColor == Color::Blue)
+        eColor = Color::Cyan;
 
     char cCardChar = (int)m_eValue + 48;
     if (m_eColor == Color::Wild && m_eValue == Value::Zero)

@@ -168,6 +168,12 @@ Hand::IsEmpty()
 }
 
 size_t
+Hand::GetSize()
+{
+    return m_vCards.size();
+}
+
+size_t
 Hand::DealTo(size_t nCards, Hand& TargetHand)
 {
     //

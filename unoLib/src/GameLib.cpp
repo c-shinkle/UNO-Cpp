@@ -173,6 +173,9 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
     case Card::Color::Wild:
         cTextColor = cMagenta;
         break;
+    case Card::Color::Cyan:
+        cTextColor = cCyan;
+        break;
     default:
         cTextColor = cWhite;
     }
@@ -187,7 +190,7 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
         NewText += cTextColor;
         NewText += cDelimeter;
         NewText += cForeground;
-        NewText += cWhite;
+        NewText += cTextColor == cWhite ? cBlue : cWhite;
         NewText += cFinalByte;
     }
     else {
