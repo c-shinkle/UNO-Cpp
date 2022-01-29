@@ -91,7 +91,10 @@ Game::InitNewGame()
 	//
 	// Deal out the first cards.
 	if (DealCards())
-		return;	
+		return;
+	//
+	// Assign hand names.
+	SetHandNames();
 	//
 	// Display the game.
 	DisplayCurrentState();
@@ -115,9 +118,7 @@ Game::DisplayCurrentState()
 	std::string strCards = "Cards:";
 	for (size_t i = 0; i < m_vHands.size(); ++i) {
 		strPlayers += '\t';
-		std::string strName = std::to_string(i);
-		if (i == 0)
-			strName += "(You)";
+		std::string strName = m_vHands[i].m_strName;
 		if (i == m_nCurrentPlayer)
 			ColorString(true, Card::Color::Blue, strName);
 		strPlayers += strName;
@@ -231,4 +232,28 @@ Game::PlayTurn()
 	if (eValue == Card::Value::Skip)
 		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
 	return { true, bGameOver };
+}
+
+void
+Game::SetHandNames()
+{
+	std::vector<std::string>vNames = { "Amy","Ann","Joe","Roy","Adam",
+		"Alan","Anna","Carl","Emma","Eric","Gary","Jack","Jean","Joan",
+		"John","Jose","Juan","Judy","Kyle","Lisa","Mark","Mary","Noah",
+		"Paul","Rose","Ruth","Ryan","Sara","Sean","Zach","Aaron","Alice",
+		"Amber","Betty","Billy","Bobby","Brian","Bruce","Bryan","Carol",
+		"David","Debra","Diana","Diane","Donna","Doris","Dylan","Emily",
+		"Ethan","Frank","Grace","Helen","Henry","Jacob","James","Janet",
+		"Jason","Jerry","Jesse","Joyce","Julia","Julie","Karen","Kayla",
+		"Keith","Kelly","Kevin","Larry","Laura","Linda","Logan","Louis",
+		"Maria","Marie","Megan","Nancy","Peter","Ralph","Randy","Roger",
+		"Sarah","Scott","Susan","Terry","Tyler","Wayne" };
+	for (Hand& Player : m_vHands) {
+		size_t nRandomIndex = std::rand() % vNames.size();
+		Player.m_strName = vNames[nRandomIndex];
+		vNames.erase(vNames.begin() + nRandomIndex);
+	}
+	//
+	// Set the first hand's name to "You"
+	m_vHands[0].m_strName = "You";
 }

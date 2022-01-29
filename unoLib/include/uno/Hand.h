@@ -22,7 +22,10 @@ public:
 	size_t DealTo(size_t nCards, Hand& TargetHand);
 	std::pair<Card::Color, Card::Value> GetTopCard();
 
+	// Public Members
+	std::string m_strName;
 private:
+	// Private Members
 	size_t m_nSelected = 0;
 	std::vector<Card> m_vCards;
 };
