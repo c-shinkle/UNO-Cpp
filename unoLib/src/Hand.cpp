@@ -7,6 +7,10 @@ Hand::Hand()
 {
 }
 
+Hand::Hand(const std::string& strName) : m_strName(strName)
+{
+}
+
 Hand::~Hand()
 {
 }
@@ -38,8 +42,10 @@ Hand::SetFullDeck()
 }
 
 void
-Hand::Display(bool bHighlightSelected)
+Hand::Display(bool bIncludeName, bool bHighlightSelected)
 {
+    if (bIncludeName && !m_strName.empty())
+        std::cout << '\n' << m_strName << '\n';
     std::string tops_and_bottoms(" ");
 
     for (int i = 0; i < m_vCards.size(); ++i)
@@ -171,6 +177,12 @@ size_t
 Hand::GetSize()
 {
     return m_vCards.size();
+}
+
+std::string
+Hand::GetName()
+{
+    return m_strName;
 }
 
 size_t

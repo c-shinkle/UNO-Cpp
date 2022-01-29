@@ -86,22 +86,19 @@ Game::InitNewGame()
 	m_DrawPile.SetFullDeck();
 	m_DrawPile.Shuffle();
 	//
-	// Create the hands.
-	m_vHands.resize(m_nPlayers);
+	// Create the hands and assign names.
+	CreateHands();
 	//
 	// Deal out the first cards.
 	if (DealCards())
 		return;
-	//
-	// Assign hand names.
-	SetHandNames();
 	//
 	// Display the game.
 	DisplayCurrentState();
 }
 
 void
-Game::DisplayCurrentState()
+Game::DisplayCurrentState(bool bEndGame)
 {
 	//
 	// Displays the current game state.
@@ -118,7 +115,7 @@ Game::DisplayCurrentState()
 	std::string strCards = "Cards:";
 	for (size_t i = 0; i < m_vHands.size(); ++i) {
 		strPlayers += '\t';
-		std::string strName = m_vHands[i].m_strName;
+		std::string strName = m_vHands[i].GetName();
 		if (i == m_nCurrentPlayer)
 			ColorString(true, Card::Color::Blue, strName);
 		strPlayers += strName;
@@ -137,20 +134,10 @@ Game::DisplayCurrentState()
 	std::cout << "\nDiscard Pile\n";
 	m_DiscardPile.DisplayTopCard();
 	//
-	// Display the player's cards.
-	std::cout << "\nYour Cards\n";
-	m_vHands[0].Display(true);
-}
-
-void
-Game::DisplayEndGameState()
-{
-	DisplayCurrentState();
-	//
 	// Display the players' cards.
-	for (size_t i = 1; i < m_nPlayers; ++i) {
-		std::cout << "\nPlayer " << i << '\n';
-		m_vHands[i].Display(true);
+	size_t nDisplay = bEndGame ? m_nPlayers : 1;
+	for (size_t i = 0; i < nDisplay; ++i) {
+		m_vHands[i].Display(true, i == 0);
 	}
 }
 
@@ -185,7 +172,7 @@ Game::Run()
 		if (bRedraw)
 			DisplayCurrentState();
 	}
-	DisplayEndGameState();
+	DisplayCurrentState(true);
 }
 
 std::pair<bool, bool>
@@ -235,9 +222,11 @@ Game::PlayTurn()
 }
 
 void
-Game::SetHandNames()
+Game::CreateHands()
 {
-	std::vector<std::string>vNames = { "Amy","Ann","Joe","Roy","Adam",
+	//
+	// Creates the hands in the deck with a random name.
+	std::vector<std::string>vNames = { "You", "Amy","Ann","Joe","Roy","Adam",
 		"Alan","Anna","Carl","Emma","Eric","Gary","Jack","Jean","Joan",
 		"John","Jose","Juan","Judy","Kyle","Lisa","Mark","Mary","Noah",
 		"Paul","Rose","Ruth","Ryan","Sara","Sean","Zach","Aaron","Alice",
@@ -248,12 +237,10 @@ Game::SetHandNames()
 		"Keith","Kelly","Kevin","Larry","Laura","Linda","Logan","Louis",
 		"Maria","Marie","Megan","Nancy","Peter","Ralph","Randy","Roger",
 		"Sarah","Scott","Susan","Terry","Tyler","Wayne" };
-	for (Hand& Player : m_vHands) {
-		size_t nRandomIndex = std::rand() % vNames.size();
-		Player.m_strName = vNames[nRandomIndex];
-		vNames.erase(vNames.begin() + nRandomIndex);
+
+	m_vHands.clear();
+	for (size_t i = 0; i < m_nPlayers; ++i) {
+		size_t nRandomIndex = i == 0 ? 0 : std::rand() % vNames.size();
+		m_vHands.push_back(Hand(vNames[nRandomIndex]));
 	}
-	//
-	// Set the first hand's name to "You"
-	m_vHands[0].m_strName = "You";
 }

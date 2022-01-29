@@ -35,9 +35,8 @@ private:
 	void AskNumberOfPlayers();
 	bool DealCards();
 	bool DrawCards(size_t nCards);
-	void DisplayCurrentState();
-	void DisplayEndGameState();
-	void SetHandNames();
+	void DisplayCurrentState(bool bEndGame = false);
+	void CreateHands();
 	std::pair<bool, bool> PlayTurn();
 
 
