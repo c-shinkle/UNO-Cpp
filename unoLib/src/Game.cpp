@@ -144,32 +144,11 @@ Game::DisplayCurrentState()
 void
 Game::DisplayEndGameState()
 {
-	//
-	// Displays the end game state.
-	//
-	// First, clear the screen for a fresh display.
-	ClearScreen();
-	//
-	// Display current player, and direction.
-	// Clockwise corresponds to increasing player index.
-	std::cout << "Player\t\tDirection\n" << m_nCurrentPlayer;
-	if (m_nCurrentPlayer == 0)
-		std::cout << "(You)";
-	if (m_bClockwise)
-		std::cout << "\t\tCW(>)\n";
-	else
-		std::cout << "\t\tCCW(<)\n";
-	//
-	// Display the top (back) of the discard pile.
-	std::cout << "\nDiscard Pile\n";
-	m_DiscardPile.DisplayTopCard();
+	DisplayCurrentState();
 	//
 	// Display the players' cards.
-	for (size_t i = 0; i < m_nPlayers; ++i) {
-		std::cout << "\nPlayer " << i;
-		if (i == 0)
-			std::cout << " (You)";
-		std::cout << "\n";
+	for (size_t i = 1; i < m_nPlayers; ++i) {
+		std::cout << "\nPlayer " << i << '\n';
 		m_vHands[i].Display(true);
 	}
 }
