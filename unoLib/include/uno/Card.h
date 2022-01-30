@@ -5,7 +5,7 @@ class Card {
 	friend class Hand;
 public:
 	// Enums
-	enum class Color { Red, Yellow, Green, Blue, Wild, Cyan };
+	enum class Color { Red, Yellow, Green, Blue, Wild, Cyan, White };
 	enum class Value {
 		Zero, One, Two, Three, Four, Five, Six, Seven,
 		Eight, Nine, Reverse, Skip, Draw

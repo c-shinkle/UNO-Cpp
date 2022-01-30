@@ -117,7 +117,7 @@ Game::DisplayCurrentState()
 		strPlayers += '\t';
 		std::string strName = m_vHands[i].GetName();
 		if (i == m_nCurrentPlayer)
-			ColorString(true, Card::Color::Blue, strName);
+			ColorString(true, Card::Color::White, strName);
 		strPlayers += strName;
 		strCards += '\t';
 		strCards += std::to_string(m_vHands[i].GetSize());

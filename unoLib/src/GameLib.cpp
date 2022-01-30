@@ -153,7 +153,7 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
     const char cFinalByte = 'm';
     //
     // Printing Flags
-    const bool bBold = true;
+    const bool bBold = false;
     const bool bBackground = bSelected;
 
     char cTextColor;
@@ -176,6 +176,9 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
     case Card::Color::Cyan:
         cTextColor = cCyan;
         break;
+    case Card::Color::White:
+        cTextColor = cWhite;
+        break;
     default:
         cTextColor = cWhite;
     }
@@ -190,7 +193,7 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
         NewText += cTextColor;
         NewText += cDelimeter;
         NewText += cForeground;
-        NewText += cTextColor == cWhite ? cBlue : cWhite;
+        NewText += cTextColor == cBlack ? cWhite : cBlack;
         NewText += cFinalByte;
     }
     else {
