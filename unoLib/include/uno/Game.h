@@ -35,12 +35,13 @@ private:
 	void AskNumberOfPlayers();
 	bool DealCards();
 	bool DrawCards(size_t nCards);
-	void DisplayCurrentState(bool bEndGame = false);
+	void DisplayCurrentState();
 	void CreateHands();
-	std::pair<bool, bool> PlayTurn();
+	bool PlayTurn();
 
 
 	bool m_bClockwise = true;
+	bool m_bGameOver = false;
 	size_t m_nInitialHandSize = 7;
 	size_t m_nPlayers = 0;
 	size_t m_nCurrentPlayer = 0;

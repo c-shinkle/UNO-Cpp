@@ -98,7 +98,7 @@ Game::InitNewGame()
 }
 
 void
-Game::DisplayCurrentState(bool bEndGame)
+Game::DisplayCurrentState()
 {
 	//
 	// Displays the current game state.
@@ -135,7 +135,7 @@ Game::DisplayCurrentState(bool bEndGame)
 	m_DiscardPile.DisplayTopCard();
 	//
 	// Display the players' cards.
-	size_t nDisplay = bEndGame ? m_nPlayers : 1;
+	size_t nDisplay = m_bGameOver ? m_nPlayers : 1;
 	for (size_t i = 0; i < nDisplay; ++i) {
 		m_vHands[i].Display(true, i == 0);
 	}
@@ -145,8 +145,7 @@ void
 Game::Run()
 {
 	InitNewGame();
-	bool bGameOver = false;
-	while (!bGameOver) {
+	while (!m_bGameOver) {
 		bool bRedraw = false;
 		char cInput = GetCharInput();
 
@@ -162,25 +161,24 @@ Game::Run()
 			m_vHands[0].IncrementSelection(false);
 			break;
 		case KEY_ESCAPE:
-			bGameOver = true;
+			m_bGameOver = true;
 			break;
 		case KEY_ENTER:
-			std::tie(bRedraw, bGameOver) = PlayTurn();
+			bRedraw = PlayTurn();
 			break;
 		}
 
 		if (bRedraw)
 			DisplayCurrentState();
 	}
-	DisplayCurrentState(true);
+	DisplayCurrentState();
 }
 
-std::pair<bool, bool>
+bool
 Game::PlayTurn()
 {
 	//
-	// Returns a pair of bools to indicate if the game needs to be redrawn
-	// or the game has ended. <bRedraw, bGameOver>
+	// Returns a bool to indicate if the game needs to be redrawn.
 	if (m_nCurrentPlayer != 0)
 		m_vHands[m_nCurrentPlayer].SelectPlayableCard(m_DiscardPile);
 	//
@@ -190,16 +188,17 @@ Game::PlayTurn()
 		// Draw a card if the selected card is not playable.
 		if (DrawCards(1)) {
 			std::cout << "ERROR: Ran out of draw pile cards.\n";
-			return { false, true };
+			m_bGameOver = true;
+			return false;
 		}
 		//
 		// Advance the current player.
 		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
-		return { true, false };
+		return true;
 	}
 	//
 	// If the current player has no cards, the game is over.
-	bool bGameOver = m_vHands[m_nCurrentPlayer].IsEmpty();
+	m_bGameOver = m_vHands[m_nCurrentPlayer].IsEmpty();
 	const auto [eColor, eValue] = m_DiscardPile.GetTopCard();
 	if (eValue == Card::Value::Reverse)
 		m_bClockwise = !m_bClockwise;
@@ -212,13 +211,14 @@ Game::PlayTurn()
 			nDraw += 2;
 		if (DrawCards(nDraw)) {
 			std::cout << "ERROR: Ran out of draw pile cards.\n";
-			return { false, true };
+			m_bGameOver = true;
+			return false;
 		}
 		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
 	}
 	if (eValue == Card::Value::Skip)
 		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
-	return { true, bGameOver };
+	return true;
 }
 
 void
