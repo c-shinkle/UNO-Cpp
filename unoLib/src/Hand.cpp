@@ -69,23 +69,6 @@ Hand::Display(bool bIncludeName, bool bHighlightSelected)
 }
 
 void
-Hand::DisplayTopCard()
-{
-    //
-    // Displays the top (back) card in the hand.
-    if (m_vCards.empty())
-        return;
-
-    std::string tops_and_bottoms(" - \n");
-    std::string TopCard = tops_and_bottoms;
-    TopCard += '|';
-    TopCard += m_vCards.back().GetCardString();
-    TopCard += "|\n";
-    TopCard += tops_and_bottoms;
-    std::cout << TopCard;
-}
-
-void
 Hand::Shuffle()
 {
     //
@@ -183,6 +166,16 @@ std::string
 Hand::GetName()
 {
     return m_strName;
+}
+
+std::string
+Hand::GetCardString(size_t nIndex)
+{
+    //
+    // Returns the card string for the given card index.
+    if (m_vCards.empty() || nIndex > (m_vCards.size() - 1))
+        return std::string();
+    return m_vCards[nIndex].GetCardString();
 }
 
 size_t

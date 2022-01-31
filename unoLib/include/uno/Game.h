@@ -24,6 +24,8 @@
 
 class Game {
 public:
+	// Enums
+	enum class Selectable { Hand, Draw };
 
 	// Public Methods
 	Game();
@@ -31,20 +33,30 @@ public:
 	void Run();
 
 private:
+	// Private Methods
 	void InitNewGame();
 	void AskNumberOfPlayers();
 	bool DealCards();
 	bool DrawCards(size_t nCards);
 	void DisplayCurrentState();
+	void DisplayDiscardPile();
 	void CreateHands();
 	bool PlayTurn();
+	void IncrementSelection(bool bUp);
+	void AdvanceCurrentPlayer();
+	void AddSelectable(Selectable eSelectable);
+	void RemoveSelectable(Selectable eSelectable);
+	bool IsHandSelected();
+	bool IsDrawSelected();
 
-
+	// Private Members
 	bool m_bClockwise = true;
 	bool m_bGameOver = false;
 	size_t m_nInitialHandSize = 7;
 	size_t m_nPlayers = 0;
 	size_t m_nCurrentPlayer = 0;
+	size_t m_nSelected = 0;
 	Hand m_DiscardPile, m_DrawPile;
+	std::vector<Selectable> m_vSelectables;
 	std::vector<Hand> m_vHands;
 };

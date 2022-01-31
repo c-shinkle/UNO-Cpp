@@ -93,6 +93,12 @@ Game::InitNewGame()
 	if (DealCards())
 		return;
 	//
+	// Set the current selectables.
+	m_vSelectables.clear();
+	AddSelectable(Selectable::Hand);
+	if (m_nCurrentPlayer == 0)
+		AddSelectable(Selectable::Draw);
+	//
 	// Display the game.
 	DisplayCurrentState();
 }
@@ -130,15 +136,42 @@ Game::DisplayCurrentState()
 	std::cout << strCards << '\n';
 	std::cout << strDirection << '\n';
 	//
-	// Display the top (back) of the discard pile.
-	std::cout << "\nDiscard Pile\n";
-	m_DiscardPile.DisplayTopCard();
+	// Display the discard pile.
+	DisplayDiscardPile();
 	//
 	// Display the players' cards.
 	size_t nDisplay = m_bGameOver ? m_nPlayers : 1;
 	for (size_t i = 0; i < nDisplay; ++i) {
-		m_vHands[i].Display(true, i == 0);
+		bool bSelectCard = (i == 0) && IsHandSelected();
+		m_vHands[i].Display(true, bSelectCard);
 	}
+}
+
+void
+Game::DisplayDiscardPile()
+{
+	//
+	// Displays the top card in the discard pile,
+	// and a draw option if it's the player's turn.
+	if (m_DiscardPile.IsEmpty())
+		return;
+	std::cout << "\nDiscard Pile\n";
+	std::string tops_and_bottoms(" - \n");
+	std::string TopCard = tops_and_bottoms;
+	TopCard += '|';
+	TopCard += m_DiscardPile.GetCardString(m_DiscardPile.GetSize() - 1);
+	TopCard += '|';
+
+	if (m_nCurrentPlayer == 0) {
+		TopCard += '\t';
+		std::string strDraw = "Draw";
+		if (IsDrawSelected())
+			ColorString(true, Card::Color::White, strDraw);
+		TopCard += strDraw;
+	}
+	TopCard += '\n';
+	TopCard += tops_and_bottoms;
+	std::cout << TopCard;
 }
 
 void
@@ -151,14 +184,24 @@ Game::Run()
 
 		switch (cInput) {
 		case KEY_UP:
-		case KEY_RIGHT:
 			bRedraw = true;
-			m_vHands[0].IncrementSelection(true);
+			IncrementSelection(true);
+			break;
+		case KEY_RIGHT:
+			if (IsHandSelected()) {
+				bRedraw = true;
+				m_vHands[0].IncrementSelection(true);
+			}
 			break;
 		case KEY_DOWN:
-		case KEY_LEFT:
 			bRedraw = true;
-			m_vHands[0].IncrementSelection(false);
+			IncrementSelection(false);
+			break;
+		case KEY_LEFT:
+			if (IsHandSelected()) {
+				bRedraw = true;
+				m_vHands[0].IncrementSelection(false);
+			}
 			break;
 		case KEY_ESCAPE:
 			m_bGameOver = true;
@@ -191,9 +234,7 @@ Game::PlayTurn()
 			m_bGameOver = true;
 			return false;
 		}
-		//
-		// Advance the current player.
-		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+		AdvanceCurrentPlayer();
 		return true;
 	}
 	//
@@ -202,9 +243,7 @@ Game::PlayTurn()
 	const auto [eColor, eValue] = m_DiscardPile.GetTopCard();
 	if (eValue == Card::Value::Reverse)
 		m_bClockwise = !m_bClockwise;
-	//
-	// Advance the current player.
-	IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+	AdvanceCurrentPlayer();
 	if (eValue == Card::Value::Draw) {
 		size_t nDraw = 2;
 		if (eColor == Card::Color::Wild)
@@ -214,10 +253,10 @@ Game::PlayTurn()
 			m_bGameOver = true;
 			return false;
 		}
-		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+		AdvanceCurrentPlayer();
 	}
 	if (eValue == Card::Value::Skip)
-		IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+		AdvanceCurrentPlayer();
 	return true;
 }
 
@@ -243,4 +282,61 @@ Game::CreateHands()
 		size_t nRandomIndex = i == 0 ? 0 : std::rand() % vNames.size();
 		m_vHands.push_back(Hand(vNames[nRandomIndex]));
 	}
+}
+
+void
+Game::IncrementSelection(bool bUp)
+{
+	IncrementIndex(bUp, m_vSelectables.size(), m_nSelected);
+}
+
+void
+Game::AdvanceCurrentPlayer()
+{
+	if (m_nCurrentPlayer == 0)
+		RemoveSelectable(Selectable::Draw);
+	IncrementIndex(m_bClockwise, m_nPlayers, m_nCurrentPlayer);
+	if (m_nCurrentPlayer == 0)
+		AddSelectable(Selectable::Draw);
+}
+
+void
+Game::AddSelectable(Selectable eSelectable)
+{
+	//
+	// Add the given selectable if it is not
+	// already in m_vSelectables.
+	for (size_t i = 0; i < m_vSelectables.size(); ++i) {
+		if (m_vSelectables[i] == eSelectable)
+			return;
+	}
+	m_vSelectables.push_back(eSelectable);
+}
+
+void
+Game::RemoveSelectable(Selectable eSelectable)
+{
+	//
+	// Remove the given selectable if it is
+	// in m_vSelectables, and update m_nSelected.
+	for (size_t i = 0; i < m_vSelectables.size(); ++i) {
+		if (m_vSelectables[i] == eSelectable) {
+			if (m_nSelected == i)
+				IncrementSelection(true);
+			m_vSelectables.erase(m_vSelectables.begin() + i);
+			return;
+		}
+	}
+}
+
+bool
+Game::IsHandSelected()
+{
+	return m_vSelectables[m_nSelected] == Selectable::Hand;
+}
+
+bool
+Game::IsDrawSelected()
+{
+	return m_vSelectables[m_nSelected] == Selectable::Draw;
 }

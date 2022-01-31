@@ -12,7 +12,6 @@ public:
 	~Hand();
 	void SetFullDeck();
 	void Display(bool bIncludeName = false, bool bHighlightSelected = false);
-	void DisplayTopCard();
 	void Shuffle();
 	bool ReplenishFrom(Hand& DiscardPile);
 	void IncrementSelection(bool bUp);
@@ -21,6 +20,7 @@ public:
 	bool IsEmpty();
 	size_t GetSize();
 	std::string GetName();
+	std::string GetCardString(size_t nIndex);
 	size_t DealTo(size_t nCards, Hand& TargetHand);
 	std::pair<Card::Color, Card::Value> GetTopCard();
 
