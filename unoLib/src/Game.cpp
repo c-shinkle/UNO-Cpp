@@ -57,20 +57,23 @@ Game::DealCards()
 	return false;
 }
 
-bool
+void
 Game::DrawCards(size_t nCards)
 {
 	//
 	// The current player draws nCards and the draw pile is replenished if needed.
-	// Returns true if something goes wrong, otherwise returns false.
+	// Sets m_bGameOver to true if something goes wrong.
 	nCards = m_DrawPile.DealTo(nCards, m_vHands[m_nCurrentPlayer]);
 	if (nCards == 0)
-		return false;
+		return;
 	//
 	// Replenish the draw pile with the discard pile.
-	if (m_DrawPile.ReplenishFrom(m_DiscardPile))
-		return true;
-	return DrawCards(nCards);
+	if (m_DrawPile.ReplenishFrom(m_DiscardPile)) {
+		std::cout << "ERROR: Ran out of draw pile cards.\n";
+		m_bGameOver = true;
+		return;
+	}
+	DrawCards(nCards);
 }
 
 void
@@ -222,18 +225,26 @@ Game::PlayTurn()
 {
 	//
 	// Returns a bool to indicate if the game needs to be redrawn.
-	if (m_nCurrentPlayer != 0)
+	bool bUserTurn = m_nCurrentPlayer == 0;
+	if (bUserTurn && IsDrawSelected()) {
+		//
+		// Draw a card if the user selects the draw option.
+		DrawCards(1);
+		AdvanceCurrentPlayer();
+		return true;
+	}
+	if (!bUserTurn)
 		m_vHands[m_nCurrentPlayer].SelectPlayableCard(m_DiscardPile);
 	//
 	// PlayCard checks to see if the selected card is playable.
 	if (!m_vHands[m_nCurrentPlayer].PlayCard(m_DiscardPile)) {
 		//
-		// Draw a card if the selected card is not playable.
-		if (DrawCards(1)) {
-			std::cout << "ERROR: Ran out of draw pile cards.\n";
-			m_bGameOver = true;
+		// Wait until the player selects a playable card or the draw option.
+		if (bUserTurn)
 			return false;
-		}
+		//
+		// Draw a card if the selected card is not playable.
+		DrawCards(1);
 		AdvanceCurrentPlayer();
 		return true;
 	}
@@ -248,11 +259,7 @@ Game::PlayTurn()
 		size_t nDraw = 2;
 		if (eColor == Card::Color::Wild)
 			nDraw += 2;
-		if (DrawCards(nDraw)) {
-			std::cout << "ERROR: Ran out of draw pile cards.\n";
-			m_bGameOver = true;
-			return false;
-		}
+		DrawCards(nDraw);
 		AdvanceCurrentPlayer();
 	}
 	if (eValue == Card::Value::Skip)

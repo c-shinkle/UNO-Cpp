@@ -37,7 +37,7 @@ private:
 	void InitNewGame();
 	void AskNumberOfPlayers();
 	bool DealCards();
-	bool DrawCards(size_t nCards);
+	void DrawCards(size_t nCards);
 	void DisplayCurrentState();
 	void DisplayDiscardPile();
 	void CreateHands();
