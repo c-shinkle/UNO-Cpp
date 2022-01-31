@@ -281,6 +281,7 @@ Game::CreateHands()
 	for (size_t i = 0; i < m_nPlayers; ++i) {
 		size_t nRandomIndex = i == 0 ? 0 : std::rand() % vNames.size();
 		m_vHands.push_back(Hand(vNames[nRandomIndex]));
+		vNames.erase(vNames.begin() + nRandomIndex);
 	}
 }
 
