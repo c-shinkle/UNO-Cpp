@@ -28,6 +28,7 @@ build/
 *.la
 *.a
 *.lib
+!unoLib/lib/*.lib
 
 # Executables
 *.exe
