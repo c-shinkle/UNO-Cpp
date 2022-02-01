@@ -9,5 +9,6 @@ int main()
 
     //FeatureTest(); // Comment out if desired.
     //KeyInputTest();
-    gameLoop();
+    OpenGLTest();
+    //gameLoop();
 }
