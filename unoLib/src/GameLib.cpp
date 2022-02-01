@@ -249,10 +249,20 @@ OpenGLTest()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // Vertices coordinates
     GLfloat vertices[] = {
-        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f
+        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+        -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left corner
+        0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right corner
+        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner lower corner
     };
+    // Indices array
+    GLuint indices[] = {
+        0, 3, 5, // Lower left triangle
+        3, 2, 4, // Lower right triangle
+        5, 4, 1 // Upper triangle
+    };
+
     // Create a GLFWwindow object of 800 by 800 pixels, naming it "UNO"
     GLFWwindow* window = glfwCreateWindow(800, 800, "UNO", NULL, NULL);
     // Error check if the window fails to create.
@@ -293,25 +303,32 @@ OpenGLTest()
     glDeleteShader(fragmentShader);
 
 
-    // Create reference containers for the Vertex Array Object and the Vertex Buffer Object.
-    GLuint VAO, VBO;
+    // Create reference containers for the Vertex Array Object,
+    // the Vertex Buffer Object, and the Element Buffer Object.
+    GLuint VAO, VBO, EBO;
     // Generate the VAO and VBO with only 1 object each.
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     // Make the VAO the current Vertex Array Object by binding it.
     glBindVertexArray(VAO);
     // Bind the VBO, specifically, it's a GL_ARRAY_BUFFER.
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Introduce the vertices into the VBO.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // Bind the EBO, specifically, it's a GL_ELEMENT_ARRAY_BUFFER.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // Introduce the indices into the EBO.
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Configure the Vertex Attribute so that OpenGL knows how to read the VBO.
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     // Enable the Vertex Attribute so that OpenGL knows how to use it.
     glEnableVertexAttribArray(0);
-    // Bind both the VBO and VAO to 0 so that we don't accidentally modify them.
+    // Bind the VBO, VAO, and EBO to 0 so that we don't accidentally modify them.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Specify the color of the background.
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -329,7 +346,7 @@ OpenGLTest()
         // Bind the VAO so OpenGL knows how to use it.
         glBindVertexArray(VAO);
         // Draw the triangle using the GL_TRIANGLES primitive.
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         // Take care of all GLFW events.
         glfwPollEvents();
@@ -339,6 +356,7 @@ OpenGLTest()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);
+    glDeleteBuffers(1, &EBO);
 
     // Clean up.
     glfwDestroyWindow(window);
