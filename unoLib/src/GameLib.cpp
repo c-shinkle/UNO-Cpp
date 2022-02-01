@@ -6,6 +6,10 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "uno/shaderClass.h"
+#include "uno/VAO.h"
+#include "uno/VBO.h"
+#include "uno/EBO.h"
 
 
 //
@@ -215,22 +219,6 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
     std::swap(NewText, Text);
 }
 
-// Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-
-// Fragment Shader source code
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-"}\0";
-
 void
 OpenGLTest()
 {
@@ -277,58 +265,21 @@ OpenGLTest()
     gladLoadGL();
     // Specify the viewport of OpenGL in the Window.
     glViewport(0, 0, 800, 800);
-    // Create Vertex Shader Object and get its reference.
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // Attach Vertex Shader source to the Vertex Shader Object.
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    // Compile the Vertex Shader into machine code.
-    glCompileShader(vertexShader);
+    
 
-    // Create Fragment Shader Object and get its referece.
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // Attach Fragment Shader source to the Fragment Shader Object.
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    // Compile the Fragment Shader into machine code.
-    glCompileShader(fragmentShader);
+    Shader shaderProgram("../../../../unoLib/rsrc/default.vert", "../../../../unoLib/rsrc/default.frag");
 
-    // Create Shader Program Object and get its reference.
-    GLuint shaderProgram = glCreateProgram();
-    // Attach the Vertex and Fragment Shaders to the Shader Program.
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    // Link all the shaders together into the Shader Program.
-    glLinkProgram(shaderProgram);
-    // Delete the now useless Vertex and Fragment Shader objects
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    VAO VAO1;
+    VAO1.Bind();
 
+    VBO VBO1(vertices, sizeof(vertices));
+    EBO EBO1(indices, sizeof(indices));
 
-    // Create reference containers for the Vertex Array Object,
-    // the Vertex Buffer Object, and the Element Buffer Object.
-    GLuint VAO, VBO, EBO;
-    // Generate the VAO and VBO with only 1 object each.
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    // Make the VAO the current Vertex Array Object by binding it.
-    glBindVertexArray(VAO);
-    // Bind the VBO, specifically, it's a GL_ARRAY_BUFFER.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // Introduce the vertices into the VBO.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // Bind the EBO, specifically, it's a GL_ELEMENT_ARRAY_BUFFER.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // Introduce the indices into the EBO.
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    VAO1.LinkVBO(VBO1, 0);
+    VAO1.Unbind();
+    VBO1.Unbind();
+    EBO1.Unbind();
 
-    // Configure the Vertex Attribute so that OpenGL knows how to read the VBO.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // Enable the Vertex Attribute so that OpenGL knows how to use it.
-    glEnableVertexAttribArray(0);
-    // Bind the VBO, VAO, and EBO to 0 so that we don't accidentally modify them.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Specify the color of the background.
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -342,9 +293,9 @@ OpenGLTest()
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         // Tell OpenGL which Shader Program we want to use.
-        glUseProgram(shaderProgram);
+        shaderProgram.Activate();
         // Bind the VAO so OpenGL knows how to use it.
-        glBindVertexArray(VAO);
+        VAO1.Bind();
         // Draw the triangle using the GL_TRIANGLES primitive.
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
@@ -353,10 +304,10 @@ OpenGLTest()
     }
 
     // Delete all the objects we have created.
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shaderProgram);
-    glDeleteBuffers(1, &EBO);
+    VAO1.Delete();
+    VBO1.Delete();
+    EBO1.Delete();
+    shaderProgram.Delete();
 
     // Clean up.
     glfwDestroyWindow(window);
