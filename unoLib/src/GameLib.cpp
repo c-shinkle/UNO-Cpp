@@ -226,6 +226,10 @@ ColorString(bool bSelected, Card::Color eColor, std::string& Text)
     std::swap(NewText, Text);
 }
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
 
 const unsigned int width = 800;
 const unsigned int height = 800;
@@ -311,6 +315,7 @@ OpenGLTest()
 	// Specify the viewport of OpenGL in the Window.
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, width, height);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
 
