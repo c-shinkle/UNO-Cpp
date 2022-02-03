@@ -376,7 +376,7 @@ OpenGLTest()
 	Texture planksSpec("../../../../unoLib/rsrc/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
 	planksSpec.texUnit(shaderProgram, "tex1", 1);
 
-	 
+
 
 
 	// Enables the Depth Buffer
