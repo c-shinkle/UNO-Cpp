@@ -1,6 +1,11 @@
 #include <iostream>
 #include "uno/GameLib.h"
 
+// Hide the console window.
+#ifdef _WIN32
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 int main()
 {
     //
