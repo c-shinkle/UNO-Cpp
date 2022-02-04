@@ -1,7 +1,7 @@
-add_library(unoLib src/GameLib.cpp src/Card.cpp "include/uno/Hand.h" "src/Hand.cpp" "include/uno/Game.h" "src/Game.cpp" "src/glad.c" "include/uno/Shader.h" "src/Shader.cpp" "include/uno/VBO.h" "src/VBO.cpp" "include/uno/EBO.h" "src/EBO.cpp" "include/uno/VAO.h" "src/VAO.cpp" "src/stb.cpp" "include/uno/Texture.h" "src/Texture.cpp" "include/uno/Camera.h" "src/Camera.cpp" "src/ResourceManager.cpp" "include/uno/ResourceManager.h" "include/uno/SpriteRenderer.h" "src/SpriteRenderer.cpp" "include/uno/GameObject.h" "src/GameObject.cpp" "include/uno/GameLevel.h" "src/GameLevel.cpp" "include/uno/BallObject.h" "src/BallObject.cpp" "include/uno/ParticleGenerator.h" "src/ParticleGenerator.cpp" "include/uno/PostProcessor.h" "src/PostProcessor.cpp" "include/uno/Powerup.h")
+add_library(unoLib src/GameLib.cpp src/Card.cpp "include/uno/Hand.h" "src/Hand.cpp" "include/uno/Game.h" "src/Game.cpp" "src/glad.c" "include/uno/Shader.h" "src/Shader.cpp" "include/uno/VBO.h" "src/VBO.cpp" "include/uno/EBO.h" "src/EBO.cpp" "include/uno/VAO.h" "src/VAO.cpp" "src/stb.cpp" "include/uno/Texture.h" "src/Texture.cpp" "include/uno/Camera.h" "src/Camera.cpp" "src/ResourceManager.cpp" "include/uno/ResourceManager.h" "include/uno/SpriteRenderer.h" "src/SpriteRenderer.cpp" "include/uno/GameObject.h" "src/GameObject.cpp" "include/uno/GameLevel.h" "src/GameLevel.cpp" "include/uno/BallObject.h" "src/BallObject.cpp" "include/uno/ParticleGenerator.h" "src/ParticleGenerator.cpp" "include/uno/PostProcessor.h" "src/PostProcessor.cpp" "include/uno/Powerup.h" "include/uno/TextRenderer.h" "src/TextRenderer.cpp")
  
 message("GameLib current source dir = ${CMAKE_CURRENT_SOURCE_DIR}")
  
 target_include_directories( unoLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(unoLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/glfw3.lib ${OPENGL_gl_LIBRARY})
+target_link_libraries(unoLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/glfw3.lib ${OPENGL_gl_LIBRARY} ${CMAKE_CURRENT_SOURCE_DIR}/lib/freetype.lib)

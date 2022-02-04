@@ -18,6 +18,7 @@ build/
 *.so
 *.dylib
 *.dll
+!unoLib/lib/*.dll
 
 # Fortran module files
 *.mod
