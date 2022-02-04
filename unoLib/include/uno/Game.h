@@ -13,6 +13,8 @@
 #include <GLFW/glfw3.h>
 
 #include "uno/GameLevel.h"
+#include "uno/GameObject.h"
+#include "uno/BallObject.h"
 
 // Represents the current state of the game
 enum GameState {
@@ -51,6 +53,9 @@ public:
     void ProcessInput(float dt);
     void Update(float dt);
     void Render();
+    bool CheckCollision(GameObject& one, GameObject& two);
+    bool CheckCollision(BallObject& one, GameObject& two);
+    void DoCollisions();
 };
 
 #endif
