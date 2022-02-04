@@ -1,62 +1,43 @@
-#pragma once
-#include <vector>
-#include "uno/Hand.h"
+/*******************************************************************
+** This code is part of Breakout.
+**
+** Breakout is free software: you can redistribute it and/or modify
+** it under the terms of the CC BY 4.0 license as published by
+** Creative Commons, either version 4 of the License, or (at your
+** option) any later version.
+******************************************************************/
+#ifndef GAME_H
+#define GAME_H
 
-//
-// Key defines
-#ifdef _WIN32
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
-#define KEY_ESCAPE 27
-#define KEY_ENTER 13
-#elif defined __APPLE__
-// Fill in these definitions using GameLib::KeyInputTest()
-// (commented out in UnoApp.cpp)
-#define KEY_UP 65
-#define KEY_DOWN 66
-#define KEY_LEFT 68
-#define KEY_RIGHT 67
-#define KEY_ESCAPE 27
-#define KEY_ENTER 10
-#endif
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-class Game {
-public:
-	// Enums
-	enum class Selectable { Hand, Draw };
-
-	// Public Methods
-	Game();
-	~Game();
-	void Run();
-
-private:
-	// Private Methods
-	void InitNewGame();
-	void AskNumberOfPlayers();
-	bool DealCards();
-	void DrawCards(size_t nCards);
-	void DisplayCurrentState();
-	void DisplayDiscardPile();
-	void CreateHands();
-	bool PlayTurn();
-	void IncrementSelection(bool bUp);
-	void AdvanceCurrentPlayer();
-	void AddSelectable(Selectable eSelectable);
-	void RemoveSelectable(Selectable eSelectable);
-	bool IsHandSelected();
-	bool IsDrawSelected();
-
-	// Private Members
-	bool m_bClockwise = true;
-	bool m_bGameOver = false;
-	size_t m_nInitialHandSize = 7;
-	size_t m_nPlayers = 0;
-	size_t m_nCurrentPlayer = 0;
-	size_t m_nSelected = 0;
-	Hand m_DiscardPile, m_DrawPile;
-	std::vector<Selectable> m_vSelectables;
-	std::vector<Hand> m_vHands;
+// Represents the current state of the game
+enum GameState {
+    GAME_ACTIVE,
+    GAME_MENU,
+    GAME_WIN
 };
+
+// Game holds all game-related state and functionality.
+// Combines all game-related data into a single class for
+// easy access to each of the components and manageability.
+class Game
+{
+public:
+    // game state
+    GameState               State;
+    bool                    Keys[1024];
+    unsigned int            Width, Height;
+    // constructor/destructor
+    Game(unsigned int width, unsigned int height);
+    ~Game();
+    // initialize game state (load all shaders/textures/levels)
+    void Init();
+    // game loop
+    void ProcessInput(float dt);
+    void Update(float dt);
+    void Render();
+};
+
+#endif
