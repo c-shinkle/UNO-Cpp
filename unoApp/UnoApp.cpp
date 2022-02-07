@@ -12,19 +12,24 @@ public:
 		sAppName = "Example";
 	}
 
+	olc::Sprite* sprDemo = nullptr;
+	olc::Decal* decDemo = nullptr;
+
 public:
 	bool OnUserCreate() override
 	{
-		// Called once at the start, so create things here
+		// Load assets.
+		sprDemo = new olc::Sprite("../../../../unoApp/rsrc/uno_deck.png");
+		decDemo = new olc::Decal(sprDemo);
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		// Called once per frame, draws random coloured pixels
-		for (int x = 0; x < ScreenWidth(); x++)
-			for (int y = 0; y < ScreenHeight(); y++)
-				Draw(x, y, olc::Pixel(rand() % 256, rand() % 256, rand() % 256));
+		Clear(olc::VERY_DARK_BLUE);
+		olc::vf2d mouse = { float(GetMouseX()), float(GetMouseY())};
+		DrawDecal(mouse, decDemo);
+
 		return true;
 	}
 };
