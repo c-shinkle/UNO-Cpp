@@ -1,4 +1,4 @@
-add_library(unoLib src/GameLib.cpp src/Card.cpp "include/uno/Hand.h" "src/Hand.cpp" "include/uno/Game.h" "src/Game.cpp"  )
+add_library(unoLib src/GameLib.cpp src/Card.cpp "include/uno/Hand.h" "src/Hand.cpp" "include/uno/Game.h" "src/Game.cpp"   "include/uno/Example.h" "src/Example.cpp" "src/olcPixelGameEngine.cpp")
  
 message("GameLib current source dir = ${CMAKE_CURRENT_SOURCE_DIR}")
  
