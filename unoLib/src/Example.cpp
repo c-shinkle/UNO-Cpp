@@ -28,8 +28,8 @@ bool Example::OnUserUpdate(float fElapsedTime)
 		nCol = std::rand() % nRowLen;
 	}
 
-	olc::vf2d dimCard = { 188, 282 };
-	olc::vf2d offsetCard = { 20, 18 };
+	olc::vf2d dimCard = { 94, 141 };
+	olc::vf2d offsetCard = { 10, 9 };
 
 	offsetCard.x += nCol * dimCard.x;
 	offsetCard.y += nRow * dimCard.y;
