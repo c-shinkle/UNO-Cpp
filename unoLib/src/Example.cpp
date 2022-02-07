@@ -24,7 +24,7 @@ bool Example::OnUserUpdate(float fElapsedTime)
 	if (timer > 0.5) {
 		timer = 0.0;
 		nRow = std::rand() % 6;
-		size_t nRowLen = nRow == 5 ? 6 : 10;
+		size_t nRowLen = nRow == 5 ? 7 : 10;
 		nCol = std::rand() % nRowLen;
 	}
 
