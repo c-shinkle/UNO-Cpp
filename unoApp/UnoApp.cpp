@@ -1,5 +1,6 @@
 #include <iostream>
 #include "uno/GameLib.h"
+#include "uno/Example.h"
 
 int main()
 {
@@ -9,5 +10,9 @@ int main()
 
     //FeatureTest(); // Comment out if desired.
     //KeyInputTest();
-    gameLoop();
+    //gameLoop();
+
+    Example demo;
+    if (demo.Construct(256, 240, 4, 4))
+        demo.Start();
 }
