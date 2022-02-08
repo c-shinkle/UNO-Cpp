@@ -11,7 +11,7 @@ const std::vector<Card::Value> Card::ms_vValues = {
     Value::Zero, Value::One, Value::Two, Value::Three, Value::Four, Value::Five, Value::Six,
     Value::Seven, Value::Eight, Value::Nine, Value::Reverse, Value::Skip, Value::Draw};
 
-Card::Card(Color eColor, Value eValue) : m_eColor(eColor), m_eValue(eValue)
+Card::Card(Color eColor, Value eValue) : m_eColor(eColor), m_eValue(eValue), m_Position(0, 0), m_Velocity(0,0), m_AngularVelocity(0), m_Angle(0)
 {
 }
 

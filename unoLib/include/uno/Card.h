@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
+#include "uno/olcPixelGameEngine.h"
 
 class Card {
-	friend class Hand;
 public:
 	// Enums
 	enum class Color { Red, Yellow, Green, Blue, Wild, Cyan, White };
@@ -17,7 +17,7 @@ public:
 	bool IsPlayable(const Card& TargetCard);
 	std::string GetCardString(bool bSelected = false);
 
-private:
+public:
 
 	// Members
 	bool m_bPlayed = false;
@@ -26,4 +26,9 @@ private:
 	Value m_eValue;
 	static const std::vector<Color> ms_vPrimaryColors;
 	static const std::vector<Value> ms_vValues;
+
+	olc::vf2d m_Position;
+	olc::vf2d m_Velocity;
+	float m_AngularVelocity;
+	float m_Angle;
 };
