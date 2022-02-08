@@ -22,6 +22,28 @@ bool Example::OnUserCreate()
 		card.m_Velocity = { (float)(500 + (rand() % 250)), (float)(250 + (rand() % 250)) };
 		card.m_AngularVelocity = 8 + 6 / (1 + (rand() % 15));
 	}
+
+	// Set box bounds.
+	float TotalWidth = ScreenWidth();
+	float TotalHeight = ScreenHeight();
+	float midX = TotalWidth / 2.0;
+	float midY = TotalHeight / 2.0;
+	float boxLen = 3.0 * std::min(midX, midY) / 2.0;
+	float boxHeight = dimCard.y;
+	// return if bad dimensions
+	float xStart = midX - boxLen / 2.0;
+	float yStart = midY - boxLen / 2.0;
+	if ((boxHeight > xStart) || (boxHeight > midY))
+		return false;
+
+	m_vRect.push_back({ {xStart, TotalHeight - boxHeight}, {boxLen, boxHeight} }); // Player 0
+	m_vRect.push_back({ {0.0, yStart}, {boxHeight, boxLen} }); // Player 1
+	m_vRect.push_back({ {xStart, 0.0}, {boxLen, boxHeight} }); // Player 2
+	m_vRect.push_back({ {TotalWidth - boxHeight, yStart}, {boxHeight, boxLen} }); // Player 3
+
+	// create user hand
+	m_vHands.resize(1);
+
 	return true;
 }
 
@@ -31,22 +53,38 @@ bool Example::OnUserUpdate(float fElapsedTime)
 	olc::vf2d mouse = { float(GetMouseX()), float(GetMouseY()) };
 
 	timer += fElapsedTime;
-	if (false){
-	//if (timer > 1) {
-		timer = 0.0;
-		nRow = std::rand() % 6;
-		int nRowLen = nRow == 5 ? 7 : 10;
-		nCol = std::rand() % nRowLen;
+
+	// draw lines for the player card boundaries.
+	for (const Rect& rect : m_vRect)
+		DrawRect(rect.first, rect.second);
+
+	// Update hands
+	UpdateAndDrawHand(fElapsedTime, fullDeck);
+	for (Hand& hand : m_vHands)
+		UpdateAndDrawHand(fElapsedTime, hand);
+
+
+	// update player hand second
+	if (timer < 1)
+		return true;
+	timer = 0.0;
+
+	static bool bIncrease = true;
+	if (m_vHands[0].GetSize() == 0) {
+		bIncrease = true;
+		fullDeck.Shuffle();
+	}
+	else if (m_vHands[0].GetSize() >= 15)
+		bIncrease = false;
+
+	if (bIncrease)
+		fullDeck.DealTo(1, m_vHands[0]);
+	else {
+		m_vHands[0].m_vCards.back().m_bVisible = false;
+		m_vHands[0].DealTo(1, fullDeck);
 	}
 
-	//DrawPartialRotatedDecal(mouse, decDemo, timer * 3.14159, dimCard / 2.0, GetCardOffset(nRow, nCol), dimCard);
-	//DrawPartialDecal(mouse, decDemo, GetCardOffset(nRow, nCol), dimCard);
-
-	// Update bouncing cards
-	for (Card & card : fullDeck.m_vCards) {
-		UpdateCard(fElapsedTime, card);
-		DrawCard(card);
-	}
+	PlaceHand(0);
 
 	return true;
 }
@@ -171,4 +209,40 @@ void Example::UpdateCard(float fElapsedTime, Card& card)
 void Example::DrawCard(const Card& card)
 {
 	DrawPartialRotatedDecal(card.m_Position, decDemo, card.m_Angle, dimCard / 2.0, GetCardOffset(false, card), dimCard);
+}
+
+
+void Example::PlaceHand(size_t nHand)
+{
+	// Places the hand for the given player on the window.
+	// We will assume for now we always have exaxtly four players.
+	
+	// start with user's hand...
+	if (nHand != 0)
+		return;
+	
+	float boxLen = m_vRect[0].second.x;
+	float boxHeight = m_vRect[0].second.y;
+	float yPos = m_vRect[0].first.y + boxHeight / 2.0;
+	float xStart = m_vRect[0].first.x;
+	float xIncrement = boxLen / (m_vHands[nHand].GetSize() + 1);
+	
+	for (Card& card : m_vHands[nHand].m_vCards) {
+		card.m_bVisible = true;
+		card.StopMovement();
+		xStart += xIncrement;
+		card.m_Position.x = xStart;
+		card.m_Position.y = yPos;
+	}
+}
+
+
+void Example::UpdateAndDrawHand(float fElapsedTime, Hand& hand)
+{
+	for (Card& card : hand.m_vCards) {
+		if (card.m_bVisible) {
+			UpdateCard(fElapsedTime, card);
+			DrawCard(card);
+		}
+	}
 }

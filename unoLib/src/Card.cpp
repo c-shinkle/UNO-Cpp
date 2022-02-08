@@ -69,3 +69,10 @@ Card::GetCardString(bool bSelected)
 
     return CardString;
 }
+
+void Card::StopMovement()
+{
+    m_Velocity = { 0,0 };
+    m_AngularVelocity = 0;
+    m_Angle = 0;
+}

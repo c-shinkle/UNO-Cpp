@@ -16,10 +16,12 @@ public:
 	~Card();
 	bool IsPlayable(const Card& TargetCard);
 	std::string GetCardString(bool bSelected = false);
+	void StopMovement();
 
 public:
 
 	// Members
+	bool m_bVisible = false;
 	bool m_bPlayed = false;
 	Color m_eColor;
 	Color m_eWildColor = Color::Wild;
