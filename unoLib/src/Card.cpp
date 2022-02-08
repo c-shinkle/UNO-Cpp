@@ -40,6 +40,12 @@ Card::IsPlayable(const Card& TargetCard)
     return false;
 }
 
+bool
+Card::IsActionCard() const
+{
+    return m_eValue == Value::Reverse || m_eValue == Value::Skip || m_eValue == Value::Draw;
+}
+
 std::string
 Card::GetCardString(bool bSelected)
 {

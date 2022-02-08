@@ -20,19 +20,19 @@ bool Example::OnUserCreate()
 	fullDeck.Shuffle();
 	for (Card& card : fullDeck.m_vCards) {
 		card.m_Velocity = { (float)(500 + (rand() % 250)), (float)(250 + (rand() % 250)) };
-		card.m_AngularVelocity = 8 + 6 / (1 + (rand() % 15));
+		card.m_AngularVelocity = 8.0f + 6.0f / (1.0f + (rand() % 15));
 	}
 
 	// Set box bounds.
-	float TotalWidth = ScreenWidth();
-	float TotalHeight = ScreenHeight();
-	float midX = TotalWidth / 2.0;
-	float midY = TotalHeight / 2.0;
-	float boxLen = 3.0 * std::min(midX, midY) / 2.0;
+	float TotalWidth = (float)ScreenWidth();
+	float TotalHeight = (float)ScreenHeight();
+	float midX = TotalWidth / 2.0f;
+	float midY = TotalHeight / 2.0f;
+	float boxLen = 3.0f * std::min(midX, midY) / 2.0f;
 	float boxHeight = dimCard.y;
 	// return if bad dimensions
-	float xStart = midX - boxLen / 2.0;
-	float yStart = midY - boxLen / 2.0;
+	float xStart = midX - boxLen / 2.0f;
+	float yStart = midY - boxLen / 2.0f;
 	if ((boxHeight > xStart) || (boxHeight > midY))
 		return false;
 
@@ -92,85 +92,47 @@ bool Example::OnUserUpdate(float fElapsedTime)
 std::pair<int, int>  Example::GetCardImageIndices(bool bBack, const Card& card)
 {
 	// Returns a pair of indices as { Row, Col } for the given card.
-	// This code is ugly, but it will be fixed after rearranging the card image file.
+	int nCol = 5;
+	int nRow = 4;
 	if (bBack)
-		return { 5, 6 };
+		return { nCol, nRow };
 
+	switch (card.m_eValue) {
+	case Card::Value::Zero: nCol = 9; break;
+	case Card::Value::One: nCol = 0; break;
+	case Card::Value::Two: nCol = 1; break;
+	case Card::Value::Three: nCol = 2; break;
+	case Card::Value::Four: nCol = 3; break;
+	case Card::Value::Five: nCol = 4; break;
+	case Card::Value::Six: nCol = 5; break;
+	case Card::Value::Seven: nCol = 6; break;
+	case Card::Value::Eight: nCol = 7; break;
+	case Card::Value::Nine: nCol = 8; break;
+	case Card::Value::Reverse: nRow = 5; break;
+	case Card::Value::Skip: nRow = 4; break;
+	case Card::Value::Draw: nRow = 4; break;
+	}
+
+	bool bAction = card.IsActionCard();
+	bool bDraw = card.m_eValue == Card::Value::Draw;
 
 	switch (card.m_eColor) {
-	case Card::Color::Red:
-		switch (card.m_eValue) {
-		case Card::Value::Zero: return { 5, 4 };
-		case Card::Value::One: return { 0, 0 };
-		case Card::Value::Two: return { 0, 1 };
-		case Card::Value::Three: return { 0, 2 };
-		case Card::Value::Four: return { 0, 3 };
-		case Card::Value::Five: return { 0, 4 };
-		case Card::Value::Six: return { 0, 5 };
-		case Card::Value::Seven: return { 0, 6 };
-		case Card::Value::Eight: return { 0, 7 };
-		case Card::Value::Nine: return { 0, 8 };
-		case Card::Value::Reverse: return { 4, 8 };
-		case Card::Value::Skip: return { 4, 0 };
-		case Card::Value::Draw: return { 4, 4 };
-		}
-	case Card::Color::Yellow:
-		switch (card.m_eValue) {
-		case Card::Value::Zero: return { 5, 5 };
-		case Card::Value::One: return { 1, 0 };
-		case Card::Value::Two: return { 1, 1 };
-		case Card::Value::Three: return { 1, 2 };
-		case Card::Value::Four: return { 1, 3 };
-		case Card::Value::Five: return { 1, 4 };
-		case Card::Value::Six: return { 1, 5 };
-		case Card::Value::Seven: return { 1, 6 };
-		case Card::Value::Eight: return { 1, 7 };
-		case Card::Value::Nine: return { 1, 8 };
-		case Card::Value::Reverse: return { 4, 9 };
-		case Card::Value::Skip: return { 4, 1 };
-		case Card::Value::Draw: return { 4, 5 };
-		}
-	case Card::Color::Green:
-		switch (card.m_eValue) {
-		case Card::Value::Zero: return { 5, 3 };
-		case Card::Value::One: return { 3, 0 };
-		case Card::Value::Two: return { 3, 1 };
-		case Card::Value::Three: return { 3, 2 };
-		case Card::Value::Four: return { 3, 3 };
-		case Card::Value::Five: return { 3, 4 };
-		case Card::Value::Six: return { 3, 5 };
-		case Card::Value::Seven: return { 3, 6 };
-		case Card::Value::Eight: return { 3, 7 };
-		case Card::Value::Nine: return { 3, 8 };
-		case Card::Value::Reverse: return { 5, 1 };
-		case Card::Value::Skip: return { 4, 3 };
-		case Card::Value::Draw: return { 4, 7 };
-		}
-	case Card::Color::Blue:
-		switch (card.m_eValue) {
-		case Card::Value::Zero: return { 5, 2 };
-		case Card::Value::One: return { 2, 0 };
-		case Card::Value::Two: return { 2, 1 };
-		case Card::Value::Three: return { 2, 2 };
-		case Card::Value::Four: return { 2, 3 };
-		case Card::Value::Five: return { 2, 4 };
-		case Card::Value::Six: return { 2, 5 };
-		case Card::Value::Seven: return { 2, 6 };
-		case Card::Value::Eight: return { 2, 7 };
-		case Card::Value::Nine: return { 2, 8 };
-		case Card::Value::Reverse: return { 5, 0 };
-		case Card::Value::Skip: return { 4, 2 };
-		case Card::Value::Draw: return { 4, 6 };
-		}
+	case Card::Color::Red: bAction ? nCol = 0 : nRow = 0; break;
+	case Card::Color::Yellow: bAction ? nCol = 1 : nRow = 1; break;
+	case Card::Color::Green: bAction ? nCol = 2 : nRow = 2; break;
+	case Card::Color::Blue: bAction ? nCol = 3 : nRow = 3; break;
 	case Card::Color::Wild:
-		switch (card.m_eValue) {
-		case Card::Value::Zero: return { 0, 9 };
-		case Card::Value::Draw: return { 3, 9 };
-		}
+		if (bDraw)
+			return { 4, 8 };
+		if (card.m_eValue == Card::Value::Zero)
+			return { 4, 9 };
+		[[fallthrough]];
+	default: return { 5, 4 };
 	}
-	// By default return the back side.
-	return { 5, 6 };
 
+	if (bDraw)
+		nCol += 4;
+	return { nRow, nCol };
 }
 
 olc::vf2d Example::GetCardOffset(bool bBack, const Card& card)
@@ -223,7 +185,7 @@ void Example::PlaceHand(size_t nHand)
 	
 	float boxLen = m_vRect[0].second.x;
 	float boxHeight = m_vRect[0].second.y;
-	float yPos = m_vRect[0].first.y + boxHeight / 2.0;
+	float yPos = m_vRect[0].first.y + boxHeight / 2.0f;
 	float xStart = m_vRect[0].first.x;
 	float xIncrement = boxLen / (m_vHands[nHand].GetSize() + 1);
 	

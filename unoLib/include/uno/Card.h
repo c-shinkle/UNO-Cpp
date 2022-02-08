@@ -15,6 +15,7 @@ public:
 	Card(Color eColor, Value eValue);
 	~Card();
 	bool IsPlayable(const Card& TargetCard);
+	bool IsActionCard() const;
 	std::string GetCardString(bool bSelected = false);
 	void StopMovement();
 
