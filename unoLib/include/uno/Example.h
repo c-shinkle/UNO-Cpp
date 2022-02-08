@@ -12,6 +12,7 @@ public:
 	std::pair<int, int> GetCardImageIndices(bool bBack, const Card& card);
 	olc::vf2d GetCardOffset(bool bBack, const Card& card);
 	void UpdateCard(float fElapsedTime, Card& card);
+	void UpdateBouncingCard(float fElapsedTime, Card& card);
 	void DrawCard(const Card& card);
 	void PlaceHand(size_t nHand);
 	void UpdateAndDrawHand(float fElapsedTime, Hand& hand);

@@ -44,6 +44,12 @@ bool Example::OnUserCreate()
 	// create user hand
 	m_vHands.resize(1);
 
+	// place user hand
+	fullDeck.DealTo(7, m_vHands[0]);
+	PlaceHand(0);
+
+	m_vHands[0].m_vCards.back().AnimateCard(0.75f, {0, -80});
+
 	return true;
 }
 
@@ -64,27 +70,6 @@ bool Example::OnUserUpdate(float fElapsedTime)
 		UpdateAndDrawHand(fElapsedTime, hand);
 
 
-	// update player hand second
-	if (timer < 1)
-		return true;
-	timer = 0.0;
-
-	static bool bIncrease = true;
-	if (m_vHands[0].GetSize() == 0) {
-		bIncrease = true;
-		fullDeck.Shuffle();
-	}
-	else if (m_vHands[0].GetSize() >= 15)
-		bIncrease = false;
-
-	if (bIncrease)
-		fullDeck.DealTo(1, m_vHands[0]);
-	else {
-		m_vHands[0].m_vCards.back().m_bVisible = false;
-		m_vHands[0].DealTo(1, fullDeck);
-	}
-
-	PlaceHand(0);
 
 	return true;
 }
@@ -147,12 +132,35 @@ olc::vf2d Example::GetCardOffset(bool bBack, const Card& card)
 
 void Example::UpdateCard(float fElapsedTime, Card& card)
 {
+	// Cache velocity values.
+	olc::vf2d oldVelocity = card.m_Velocity;
+	// Update position
+	card.m_Velocity += fElapsedTime * card.m_Acceleration;
+	card.m_Position += fElapsedTime * card.m_Velocity;
+	card.m_Angle += fElapsedTime * card.m_AngularVelocity;
+	if (card.m_Position.x > ScreenWidth() || card.m_Position.x < 0)
+		card.m_Velocity.x *= -1;
+	if (card.m_Position.y > ScreenHeight() || card.m_Position.y < 0)
+		card.m_Velocity.y *= -1;
+
+	// Stop accelerating if a velocity component becomes zero (crosses zero).
+	if (oldVelocity.x * card.m_Velocity.x <= 0) {
+		card.m_Velocity.x = 0.0f;
+		card.m_Acceleration.x = 0.0f;
+	}
+	if (oldVelocity.y * card.m_Velocity.y <= 0) {
+		card.m_Velocity.y = 0.0f;
+		card.m_Acceleration.y = 0.0f;
+	}
+}
+
+void Example::UpdateBouncingCard(float fElapsedTime, Card& card)
+{
 	// Update position
 	card.m_Position += fElapsedTime * card.m_Velocity;
 	card.m_Angle += fElapsedTime * card.m_AngularVelocity;
 	if (card.m_Position.x > ScreenWidth() || card.m_Position.x < 0) {
 		card.m_Velocity.x *= -1;
-
 		int spinChance = rand() % 2;
 		card.m_AngularVelocity /= card.m_AngularVelocity;
 		card.m_AngularVelocity *= 33 / (1 + (rand() % 33));

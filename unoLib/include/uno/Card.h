@@ -18,6 +18,7 @@ public:
 	bool IsActionCard() const;
 	std::string GetCardString(bool bSelected = false);
 	void StopMovement();
+	void AnimateCard(float lfTime, const olc::vf2d& Displacement);
 
 public:
 
@@ -32,6 +33,7 @@ public:
 
 	olc::vf2d m_Position;
 	olc::vf2d m_Velocity;
+	olc::vf2d m_Acceleration;
 	float m_AngularVelocity;
 	float m_Angle;
 };
