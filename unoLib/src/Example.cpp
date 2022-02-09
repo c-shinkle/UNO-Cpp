@@ -1,5 +1,9 @@
 #include "uno/Example.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 Example::Example()
 {
 	// Name your application
@@ -41,12 +45,14 @@ bool Example::OnUserCreate()
 	m_vRect.push_back({ {xStart, 0.0}, {boxLen, boxHeight} }); // Player 2
 	m_vRect.push_back({ {TotalWidth - boxHeight, yStart}, {boxHeight, boxLen} }); // Player 3
 
-	// create user hand
-	m_vHands.resize(1);
+	// create 4 hands
+	m_vHands.resize(4);
 
-	// place user hand
-	fullDeck.DealTo(7, m_vHands[0]);
-	PlaceHand(0);
+	// place hands
+	for (size_t i = 0; i < m_vHands.size(); ++i) {
+		fullDeck.DealTo(7, m_vHands[i]);
+		PlaceHand(i);
+	}
 
 	return true;
 }
@@ -88,9 +94,9 @@ bool Example::OnUserUpdate(float fElapsedTime)
 		DrawRect(rect.first, rect.second);
 
 	// Update hands
-	UpdateAndDrawHand(fElapsedTime, fullDeck);
-	for (Hand& hand : m_vHands)
-		UpdateAndDrawHand(fElapsedTime, hand);
+	UpdateAndDrawHand(false, fElapsedTime, fullDeck);
+	for (size_t i = 0; i < m_vHands.size(); ++i)
+		UpdateAndDrawHand(i != 0, fElapsedTime, m_vHands[i]);
 
 
 
@@ -199,9 +205,9 @@ void Example::UpdateBouncingCard(float fElapsedTime, Card& card)
 	}
 }
 
-void Example::DrawCard(const Card& card)
+void Example::DrawCard(bool bBack, const Card& card)
 {
-	DrawPartialRotatedDecal(card.m_Position, decDemo, card.m_Angle, dimCard / 2.0, GetCardOffset(false, card), dimCard);
+	DrawPartialRotatedDecal(card.m_Position, decDemo, card.m_Angle, dimCard / 2.0, GetCardOffset(bBack, card), dimCard);
 }
 
 
@@ -209,32 +215,39 @@ void Example::PlaceHand(size_t nHand)
 {
 	// Places the hand for the given player on the window.
 	// We will assume for now we always have exaxtly four players.
-	
-	// start with user's hand...
-	if (nHand != 0)
+	if (nHand > 3)
 		return;
 	
+	bool bVert = nHand == 1 || nHand == 3;
+
 	float boxLen = m_vRect[0].second.x;
 	float boxHeight = m_vRect[0].second.y;
-	float yPos = m_vRect[0].first.y + boxHeight / 2.0f;
-	float xStart = m_vRect[0].first.x;
-	float xIncrement = boxLen / (m_vHands[nHand].GetSize() + 1);
+	float yStart = bVert ? m_vRect[1].first.y : m_vRect[0].first.y + boxHeight / 2.0f;
+	float xStart = bVert ? m_vRect[1].first.x + boxHeight / 2.0f : m_vRect[0].first.x;
+	if (nHand == 2)
+		yStart = m_vRect[2].first.y + boxHeight / 2.0f;
+	else if (nHand == 3)
+		xStart = m_vRect[3].first.x + boxHeight / 2.0f;
+
+
+	float Increment = boxLen / (m_vHands[nHand].GetSize() + 1);
 	
 	for (Card& card : m_vHands[nHand].m_vCards) {
 		card.m_bVisible = true;
 		card.StopMovement();
-		xStart += xIncrement;
-		card.m_Position.x = xStart;
-		card.m_Position.y = yPos;
+		xStart += bVert ? 0.0f : Increment;
+		yStart += bVert ? Increment : 0.0f;
+		card.m_Position = { xStart, yStart };
+		card.m_Angle = (float)(M_PI * nHand / 2.0);
 	}
 }
 
-void Example::UpdateAndDrawHand(float fElapsedTime, Hand& hand)
+void Example::UpdateAndDrawHand(bool bBack, float fElapsedTime, Hand& hand)
 {
 	for (Card& card : hand.m_vCards) {
 		if (card.m_bVisible) {
 			UpdateCard(fElapsedTime, card);
-			DrawCard(card);
+			DrawCard(bBack, card);
 		}
 	}
 }
@@ -266,7 +279,7 @@ void Example::SetCurrentHover()
 void Example::AnimateCardHover(bool bUp, Card& card)
 {
 	float finalY = m_vRect[0].first.y + m_vRect[0].second.y / 2.0f;
-	finalY -= bUp ? 80.0f : 0.0f;
+	finalY -= bUp ? dimCard.y / 2.0f : 0.0f;
 	olc::vf2d finalPos = {card.m_Position.x, finalY};
-	card.AnimateCard(0.75f, finalPos - card.m_Position);
+	card.AnimateCard(0.5f, finalPos - card.m_Position);
 }
