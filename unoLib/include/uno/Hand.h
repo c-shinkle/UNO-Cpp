@@ -25,8 +25,8 @@ public:
 	std::pair<Card::Color, Card::Value> GetTopCard();
 
 	std::vector<Card> m_vCards;
+	size_t m_nSelected = 0;
 private:
 	// Private Members
-	size_t m_nSelected = 0;
 	std::string m_strName;
 };

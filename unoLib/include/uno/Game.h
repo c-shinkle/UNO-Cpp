@@ -1,62 +1,57 @@
-#pragma once
-#include <vector>
+#include "olcPixelGameEngine.h"
+#include "uno/Card.h"
 #include "uno/Hand.h"
 
-//
-// Key defines
-#ifdef _WIN32
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
-#define KEY_ESCAPE 27
-#define KEY_ENTER 13
-#elif defined __APPLE__
-// Fill in these definitions using GameLib::KeyInputTest()
-// (commented out in UnoApp.cpp)
-#define KEY_UP 65
-#define KEY_DOWN 66
-#define KEY_LEFT 68
-#define KEY_RIGHT 67
-#define KEY_ESCAPE 27
-#define KEY_ENTER 10
-#endif
-
-class Game {
+// Override base class with your custom functionality
+class Game : public olc::PixelGameEngine
+{
 public:
 	// Enums
-	enum class Selectable { Hand, Draw };
+	enum class Hoverable { None, Hand };
 
-	// Public Methods
 	Game();
-	~Game();
-	void Run();
-
-private:
-	// Private Methods
-	void InitNewGame();
-	void AskNumberOfPlayers();
+	bool OnUserCreate() override;
+	bool OnUserUpdate(float fElapsedTime) override;
+	std::pair<int, int> GetCardImageIndices(bool bBack, const Card& card);
+	olc::vf2d GetCardOffset(bool bBack, const Card& card);
+	void UpdateCard(float fElapsedTime, Card& card);
+	void UpdateBouncingCard(float fElapsedTime, Card& card);
+	void DrawCard(bool bBack, const Card& card);
+	void PlaceHand(size_t nHand);
+	void UpdateAndDrawHand(bool bBack, float fElapsedTime, Hand& hand);
+	bool IsCardHovered(const Card& card) const;
+	void SetCurrentHover();
+	void AnimateCardHover(bool bUp, Card& card);
+	void AdvanceCurrentPlayer();
+	void CreateHands();
+	bool InitNewGame();
 	bool DealCards();
 	void DrawCards(size_t nCards);
-	void DisplayCurrentState();
-	void DisplayDiscardPile();
-	void CreateHands();
-	bool PlayTurn();
-	void IncrementSelection(bool bUp);
-	void AdvanceCurrentPlayer();
-	void AddSelectable(Selectable eSelectable);
-	void RemoveSelectable(Selectable eSelectable);
+	void PlayTurn();
+	bool IsNoneSelected();
 	bool IsHandSelected();
-	bool IsDrawSelected();
+	void DrawDiscardPile(float fElapsedTime);
+	void PlaceInDiscardPile();
 
-	// Private Members
+public:
+
+	typedef std::pair<olc::vf2d, olc::vf2d> Rect;
+	std::vector<Rect> m_vRect;
+
+	olc::Sprite* sprDemo = nullptr;
+	olc::Decal* decDemo = nullptr;
+	olc::vf2d dimCard = { 94, 141 };
+
+	Hoverable m_eHover = Hoverable::None;
+	size_t m_nHoverIndex = 0;
+	float timer = 0.0;
+
+
 	bool m_bClockwise = true;
 	bool m_bGameOver = false;
-	size_t m_nInitialHandSize = 7;
-	size_t m_nPlayers = 0;
+	const size_t m_nInitialHandSize = 7;
+	const size_t m_nPlayers = 4;
 	size_t m_nCurrentPlayer = 0;
-	size_t m_nSelected = 0;
 	Hand m_DiscardPile, m_DrawPile;
-	std::vector<Selectable> m_vSelectables;
 	std::vector<Hand> m_vHands;
 };

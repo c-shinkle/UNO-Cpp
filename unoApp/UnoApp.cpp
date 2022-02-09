@@ -1,6 +1,6 @@
 #include <iostream>
 #include "uno/GameLib.h"
-#include "uno/Example.h"
+#include "uno/Game.h"
 
 // Hide the console window.
 #ifdef _WIN32
@@ -17,7 +17,7 @@ int main()
     //KeyInputTest();
     //gameLoop();
 
-    Example demo;
+    Game demo;
     if (demo.Construct(1280, 720, 1, 1))
         //if (demo.Construct(320, 180, 4, 4))
         demo.Start();

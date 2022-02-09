@@ -2,7 +2,6 @@
 #include <string>
 #include "uno/GameLib.h"
 #include "uno/Hand.h"
-#include "uno/Game.h"
 //
 // Headers for getch() implementation
 #ifdef _WIN32
@@ -18,8 +17,8 @@
 
 void gameLoop()
 {
-    Game UNO;
-    UNO.Run();    
+    //Game UNO;
+    //UNO.Run();    
 }
 
 void ClearScreen()
