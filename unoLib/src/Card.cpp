@@ -88,14 +88,6 @@ Card::AnimateCard(float lfTime, const olc::vf2d& Displacement)
 {
     // Sets the velocity and acceleration values to displace
     // this card the given amount in the given time.
-
-    // We will start with an implementation that requires start from standstill.
-    // Don't worry about rotation for now.
-    if (m_Velocity != olc::vf2d{ 0, 0 } || m_Acceleration != olc::vf2d{ 0, 0 }) {
-        StopMovement();
-        return;
-    }
-
     m_Velocity = 2.0f * Displacement / lfTime;
     m_Acceleration = -2.0f * Displacement / lfTime / lfTime;
 }

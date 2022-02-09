@@ -48,17 +48,40 @@ bool Example::OnUserCreate()
 	fullDeck.DealTo(7, m_vHands[0]);
 	PlaceHand(0);
 
-	m_vHands[0].m_vCards.back().AnimateCard(0.75f, {0, -80});
-
 	return true;
 }
 
 bool Example::OnUserUpdate(float fElapsedTime)
 {
+	Clear(olc::VERY_DARK_BLUE);	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Process Input
+	///////////////////////////////////////////////////////////////////////////////////////////////
 	Clear(olc::VERY_DARK_BLUE);
-	olc::vf2d mouse = { float(GetMouseX()), float(GetMouseY()) };
-
 	timer += fElapsedTime;
+
+	// Cache the old hover so we know if it has changed.
+	Hoverable eOldHover = m_eHover;
+	size_t nOldHoverIndex = m_nHoverIndex;
+	SetCurrentHover();
+
+	bool bOldHover = eOldHover == Hoverable::Hand;
+	bool bNewHover = m_eHover == Hoverable::Hand;
+
+	if (bOldHover && bNewHover && nOldHoverIndex != m_nHoverIndex) {
+		AnimateCardHover(false, m_vHands[0].m_vCards[nOldHoverIndex]);
+		AnimateCardHover(true, m_vHands[0].m_vCards[m_nHoverIndex]);
+	}
+	else if (bOldHover && !bNewHover) {
+		AnimateCardHover(false, m_vHands[0].m_vCards[nOldHoverIndex]);
+	}
+	else if (!bOldHover && bNewHover) {
+		AnimateCardHover(true, m_vHands[0].m_vCards[m_nHoverIndex]);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Update Window
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	// draw lines for the player card boundaries.
 	for (const Rect& rect : m_vRect)
@@ -206,7 +229,6 @@ void Example::PlaceHand(size_t nHand)
 	}
 }
 
-
 void Example::UpdateAndDrawHand(float fElapsedTime, Hand& hand)
 {
 	for (Card& card : hand.m_vCards) {
@@ -215,4 +237,36 @@ void Example::UpdateAndDrawHand(float fElapsedTime, Hand& hand)
 			DrawCard(card);
 		}
 	}
+}
+
+bool Example::IsCardHovered(const Card& card) const
+{
+	olc::vi2d MousePos = GetMousePos();
+	int32_t x1 = card.m_Position.x - dimCard.x / 2.0f;
+	int32_t y1 = card.m_Position.y - dimCard.y / 2.0f;
+	int32_t x2 = x1 + dimCard.x;
+	int32_t y2 = y1 + dimCard.y;
+
+	return MousePos.x >= x1 && MousePos.y >= y1 && MousePos.x <= x2 && MousePos.y <= y2;
+}
+
+void Example::SetCurrentHover()
+{
+	// First see if any cards are hovered over.
+	// Take the highest index value as this is the "top" card.
+	m_eHover = Hoverable::None;
+	for (size_t i = 0; i < m_vHands[0].GetSize(); ++i) {
+		if (IsCardHovered(m_vHands[0].m_vCards[i])) {
+			m_eHover = Hoverable::Hand;
+			m_nHoverIndex = i;
+		}
+	}
+}
+
+void Example::AnimateCardHover(bool bUp, Card& card)
+{
+	float finalY = m_vRect[0].first.y + m_vRect[0].second.y / 2.0f;
+	finalY -= bUp ? 80.0 : 0;
+	olc::vf2d finalPos = {card.m_Position.x, finalY};
+	card.AnimateCard(0.75f, finalPos - card.m_Position);
 }

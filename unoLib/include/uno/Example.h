@@ -6,6 +6,9 @@
 class Example : public olc::PixelGameEngine
 {
 public:
+	// Enums
+	enum class Hoverable { None, Hand };
+
 	Example();
 	bool OnUserCreate() override;
 	bool OnUserUpdate(float fElapsedTime) override;
@@ -16,6 +19,9 @@ public:
 	void DrawCard(const Card& card);
 	void PlaceHand(size_t nHand);
 	void UpdateAndDrawHand(float fElapsedTime, Hand& hand);
+	bool IsCardHovered(const Card& card) const;
+	void SetCurrentHover();
+	void AnimateCardHover(bool bUp, Card& card);
 
 public:
 
@@ -25,9 +31,10 @@ public:
 	olc::Sprite* sprDemo = nullptr;
 	olc::Decal* decDemo = nullptr;
 	olc::vf2d dimCard = { 94, 141 };
-	Hand fullDeck;
-	int nRow = 0;
-	int nCol = 0;
+
+	Hoverable m_eHover = Hoverable::None;
+	size_t m_nHoverIndex = 0;
 	float timer = 0.0;
 	std::vector<Hand> m_vHands;
+	Hand fullDeck;
 };
