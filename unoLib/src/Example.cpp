@@ -13,7 +13,7 @@ bool Example::OnUserCreate()
 	std::srand((unsigned int)std::time(0));
 	// Load assets.
 	sprDemo = new olc::Sprite("../../../../unoLib/rsrc/uno_deck.png");
-	decDemo = new olc::Decal(sprDemo);
+	decDemo = new olc::Decal(sprDemo, true);
 
 	// Create bouncing cards.
 	fullDeck.SetFullDeck();
