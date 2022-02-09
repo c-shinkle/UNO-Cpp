@@ -242,10 +242,10 @@ void Example::UpdateAndDrawHand(float fElapsedTime, Hand& hand)
 bool Example::IsCardHovered(const Card& card) const
 {
 	olc::vi2d MousePos = GetMousePos();
-	int32_t x1 = card.m_Position.x - dimCard.x / 2.0f;
-	int32_t y1 = card.m_Position.y - dimCard.y / 2.0f;
-	int32_t x2 = x1 + dimCard.x;
-	int32_t y2 = y1 + dimCard.y;
+	int32_t x1 = (int32_t)card.m_Position.x - (int32_t)dimCard.x / 2;
+	int32_t y1 = (int32_t)card.m_Position.y - (int32_t)dimCard.y / 2;
+	int32_t x2 = x1 + (int32_t)dimCard.x;
+	int32_t y2 = y1 + (int32_t)dimCard.y;
 
 	return MousePos.x >= x1 && MousePos.y >= y1 && MousePos.x <= x2 && MousePos.y <= y2;
 }
@@ -266,7 +266,7 @@ void Example::SetCurrentHover()
 void Example::AnimateCardHover(bool bUp, Card& card)
 {
 	float finalY = m_vRect[0].first.y + m_vRect[0].second.y / 2.0f;
-	finalY -= bUp ? 80.0 : 0;
+	finalY -= bUp ? 80.0f : 0.0f;
 	olc::vf2d finalPos = {card.m_Position.x, finalY};
 	card.AnimateCard(0.75f, finalPos - card.m_Position);
 }
