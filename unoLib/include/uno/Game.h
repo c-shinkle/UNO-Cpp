@@ -7,7 +7,7 @@ class Game : public olc::PixelGameEngine
 {
 public:
 	// Enums
-	enum class Hoverable { None, Hand };
+	enum class Hoverable { None, Hand, Draw };
 
 	Game();
 	bool OnUserCreate() override;
@@ -28,10 +28,10 @@ public:
 	bool DealCards();
 	void DrawCards(size_t nCards);
 	void PlayTurn();
-	bool IsNoneSelected();
-	bool IsHandSelected();
 	void DrawDiscardPile(float fElapsedTime);
+	void DrawDrawPile(float fElapsedTime);
 	void PlaceInDiscardPile();
+	void PlaceDrawPile();
 
 public:
 

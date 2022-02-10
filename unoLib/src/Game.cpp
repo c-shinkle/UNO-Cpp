@@ -55,29 +55,9 @@ bool Game::OnUserUpdate(float fElapsedTime)
 	Clear(olc::VERY_DARK_BLUE);
 	timer += fElapsedTime;
 
-	// Cache the old hover so we know if it has changed.
-	Hoverable eOldHover = m_eHover;
-	size_t nOldHoverIndex = m_nHoverIndex;
-	SetCurrentHover();
-
-	bool bOldHover = eOldHover == Hoverable::Hand;
-	bool bNewHover = m_eHover == Hoverable::Hand;
-
-	if (bOldHover && bNewHover && nOldHoverIndex != m_nHoverIndex) {
-		if (nOldHoverIndex < m_vHands[0].GetSize())
-			AnimateCardHover(false, m_vHands[0].m_vCards[nOldHoverIndex]);
-		AnimateCardHover(true, m_vHands[0].m_vCards[m_nHoverIndex]);
-	}
-	else if (bOldHover && !bNewHover) {
-		if (nOldHoverIndex < m_vHands[0].GetSize())
-			AnimateCardHover(false, m_vHands[0].m_vCards[nOldHoverIndex]);
-	}
-	else if (!bOldHover && bNewHover) {
-		AnimateCardHover(true, m_vHands[0].m_vCards[m_nHoverIndex]);
-	}
-
 	// Play the current turn when the mouse is clicked.
 	if (!m_bGameOver && GetMouse(0).bPressed) {
+		SetCurrentHover();
 		PlayTurn();
 	}
 
@@ -95,7 +75,9 @@ bool Game::OnUserUpdate(float fElapsedTime)
 	// write the current direction.
 	std::string strCurrentDirection = m_bClockwise ? "Direction = CW" : "Direction = CCW";
 	DrawString({ 20, 30 }, strCurrentDirection);
-	// draw discard pile
+	// draw the draw pile
+	DrawDrawPile(fElapsedTime);
+	// draw the discard pile
 	DrawDiscardPile(fElapsedTime);
 	// Update hands
 	for (size_t i = 0; i < m_vHands.size(); ++i)
@@ -266,7 +248,12 @@ bool Game::IsCardHovered(const Card& card) const
 
 void Game::SetCurrentHover()
 {
-	// First see if any cards are hovered over.
+	if (IsCardHovered(m_DrawPile.m_vCards.back())) {
+		m_eHover = Hoverable::Draw;
+		return;
+	}
+
+	// See if any cards are hovered over.
 	// Take the highest index value as this is the "top" card.
 	m_eHover = Hoverable::None;
 	for (size_t i = 0; i < m_vHands[0].GetSize(); ++i) {
@@ -366,6 +353,7 @@ Game::DealCards()
 		std::cout << "ERROR: Ran out of cards in the draw pile.\n";
 		return true;
 	}
+	PlaceDrawPile();
 	PlaceInDiscardPile();
 	return false;
 }
@@ -392,14 +380,14 @@ Game::DrawCards(size_t nCards)
 void
 Game::PlayTurn()
 {
-	//
-	// Returns a bool to indicate if the game needs to be redrawn.
 	bool bUserTurn = m_nCurrentPlayer == 0;
-	if (bUserTurn && IsNoneSelected()) {
+	if (bUserTurn && m_eHover != Hoverable::Hand) {
 		//
 		// Draw a card if the user selects the draw option.
-		DrawCards(1);
-		AdvanceCurrentPlayer();
+		if (m_eHover == Hoverable::Draw) {
+			DrawCards(1);
+			AdvanceCurrentPlayer();
+		}
 		return;
 	}
 	if (bUserTurn)
@@ -438,16 +426,6 @@ Game::PlayTurn()
 		AdvanceCurrentPlayer();
 }
 
-bool Game::IsNoneSelected()
-{
-	return m_eHover == Hoverable::None;
-}
-
-bool Game::IsHandSelected()
-{
-	return m_eHover == Hoverable::Hand;
-}
-
 void Game::DrawDiscardPile(float fElapsedTime)
 {
 	// Only draw the last five cards.
@@ -457,6 +435,15 @@ void Game::DrawDiscardPile(float fElapsedTime)
 		UpdateCard(fElapsedTime, m_DiscardPile.m_vCards[i]);
 		DrawCard(false, m_DiscardPile.m_vCards[i]);
 	}
+}
+
+void Game::DrawDrawPile(float fElapsedTime)
+{
+	// Only draw the last card.
+	if (m_DiscardPile.IsEmpty())
+		return;
+	UpdateCard(fElapsedTime, m_DrawPile.m_vCards.back());
+	DrawCard(true, m_DrawPile.m_vCards.back());
 }
 
 void Game::PlaceInDiscardPile()
@@ -471,4 +458,16 @@ void Game::PlaceInDiscardPile()
 	// Give a random angle between -60 and 60 degrees.
 	float fRandDeg = (float)(rand() % 120);
 	card.m_Angle = (float)M_PI * (fRandDeg - 60.0f) / 180.0f;
+}
+
+void Game::PlaceDrawPile()
+{
+	// Positions cards in the Draw pile in the correct position.
+	float xPos = ScreenWidth() / 2.0f - dimCard.y;
+	float yPos = ScreenHeight() / 2.0f;
+	for (Card& card : m_DrawPile.m_vCards) {
+		card.StopMovement();
+		card.m_Position = { xPos, yPos };
+		card.m_Angle = 0.0f;
+	}
 }
